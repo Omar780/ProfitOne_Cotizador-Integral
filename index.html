@@ -19,7 +19,12 @@
     background:var(--panel);border:1px solid var(--line);
     border-radius:16px;padding:16px 22px;margin-bottom:14px;box-shadow:0 2px 10px rgba(21,43,68,.06)}
   .brand{display:flex;align-items:center;gap:12px}
-  .brand-logo{width:50px;height:50px;flex-shrink:0}
+  .brand-logo{width:50px;height:50px;flex-shrink:0;object-fit:contain}
+  .brand-logo-wrap{position:relative;width:50px;height:50px;flex-shrink:0}
+  .logo-edit-btn{position:absolute;bottom:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
+    background:var(--blue);color:#fff;border:2px solid var(--panel);font-size:11px;line-height:1;
+    cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .logo-edit-btn:hover{background:var(--blue-dark)}
   .brand h1{font-size:18px;letter-spacing:.3px;color:var(--navy)}
   .brand p{margin:2px 0 0;font-size:11px;color:var(--txt-muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
   .quick-note{display:flex;flex-direction:column;gap:4px;min-width:260px}
@@ -134,6 +139,18 @@
   .modal-actions{display:flex;gap:10px;justify-content:flex-end}
 
   .hidden{display:none !important}
+  .hist-detalle-row td{padding:0;border-bottom:1px solid var(--line)}
+  .hist-detalle-inner{background:var(--panel2);padding:14px 18px;border-top:1px dashed var(--line)}
+  .hist-detalle-titulo{font-size:10.5px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+  .hist-detalle-table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .hist-detalle-table thead th{background:var(--panel);color:var(--txt-muted);font-size:9.5px;text-transform:uppercase;
+    letter-spacing:.3px;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)}
+  .hist-detalle-table thead th:first-child{text-align:left}
+  .hist-detalle-table td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line)}
+  .hist-detalle-table td:first-child{text-align:left;font-weight:600;color:var(--navy)}
+  .edit-badge{display:inline-block;margin-left:10px;font-size:11px;font-weight:600;color:var(--amber);vertical-align:middle}
+  .link-btn{background:none;border:none;color:var(--blue);font-size:11px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline}
+  .link-btn:hover{color:var(--blue-dark)}
 
   .mode-toggle{display:flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
     padding:12px 18px;margin-bottom:18px;align-items:center;flex-wrap:wrap;box-shadow:0 2px 10px rgba(21,43,68,.05)}
@@ -232,21 +249,26 @@
 
   <header>
     <div class="brand">
-      <svg class="brand-logo" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
-            <stop offset="0%" stop-color="#106FCC"></stop>
-            <stop offset="100%" stop-color="#1A86F1"></stop>
-          </linearGradient>
-        </defs>
-        <path d="M158 44 A82 82 0 1 0 158 156" stroke="#152B44" stroke-width="22" fill="none" stroke-linecap="round"></path>
-        <path d="M140 64 A55 55 0 1 0 140 136" stroke="#152B44" stroke-width="18" fill="none" stroke-linecap="round"></path>
-        <rect x="80" y="118" width="24" height="42" rx="3" fill="url(#barGrad)"></rect>
-        <rect x="112" y="98" width="24" height="62" rx="3" fill="url(#barGrad)"></rect>
-        <rect x="144" y="72" width="24" height="88" rx="3" fill="url(#barGrad)"></rect>
-        <circle cx="118" cy="90" r="3.5" fill="#1A86F1"></circle>
-        <circle cx="150" cy="64" r="3.5" fill="#1A86F1"></circle>
-      </svg>
+      <div id="brandLogoWrap" class="brand-logo-wrap">
+        <svg class="brand-logo" id="brandLogoSvg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="#106FCC"></stop>
+              <stop offset="100%" stop-color="#1A86F1"></stop>
+            </linearGradient>
+          </defs>
+          <path d="M158 44 A82 82 0 1 0 158 156" stroke="#152B44" stroke-width="22" fill="none" stroke-linecap="round"></path>
+          <path d="M140 64 A55 55 0 1 0 140 136" stroke="#152B44" stroke-width="18" fill="none" stroke-linecap="round"></path>
+          <rect x="80" y="118" width="24" height="42" rx="3" fill="url(#barGrad)"></rect>
+          <rect x="112" y="98" width="24" height="62" rx="3" fill="url(#barGrad)"></rect>
+          <rect x="144" y="72" width="24" height="88" rx="3" fill="url(#barGrad)"></rect>
+          <circle cx="118" cy="90" r="3.5" fill="#1A86F1"></circle>
+          <circle cx="150" cy="64" r="3.5" fill="#1A86F1"></circle>
+        </svg>
+        <img class="brand-logo" id="brandLogoImg" style="display:none" alt="Logo COSEINCO">
+        <button type="button" class="logo-edit-btn" id="btnCambiarLogo" title="Cambiar logo" onclick="byId('logoFileInput').click()">&#9998;</button>
+        <input type="file" id="logoFileInput" accept="image/png,image/jpeg" style="display:none" onchange="handleLogoFile(event)">
+      </div>
       <div>
         <h1>Calculadora de Precio de Venta</h1>
         <p>Coseinco Soluciones Tecnologicas</p>
@@ -292,48 +314,6 @@
     </div>
   </div>
 
-  <div class="card">
-    <h2>Catalogo de Proveedores (Importar CSV)</h2>
-    <p style="font-size:12px;color:var(--txt-muted);margin:-6px 0 16px">
-      Sube una lista de precios de tu proveedor (Ingram, Intcomex, Deltron u Otros). Soporta CSV separado por
-      punto y coma (;) o coma (,). Elige tu mismo que columna es el Nombre del Producto y cual es el Precio,
-      ya que cada proveedor exporta con un formato distinto.
-    </p>
-    <div class="grid grid-4">
-      <div class="field">
-        <label>Archivo CSV</label>
-        <input type="file" id="catFile" accept=".csv,.txt" onchange="handleCatalogoFile(event)">
-      </div>
-      <div class="field">
-        <label>Proveedor de esta lista</label>
-        <select id="catProveedor">
-          <option value="Ingram">Ingram</option>
-          <option value="Intcomex">Intcomex</option>
-          <option value="Deltron" selected>Deltron</option>
-          <option value="Otros">Otros</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Columna: Nombre del Producto</label>
-        <select id="catColNombre" disabled><option value="">Sube un archivo primero</option></select>
-      </div>
-      <div class="field">
-        <label>Columna: Precio</label>
-        <select id="catColPrecio" disabled><option value="">Sube un archivo primero</option></select>
-      </div>
-    </div>
-
-    <div id="catPreviewWrap"></div>
-
-    <div class="form-actions" style="justify-content:space-between;align-items:center">
-      <span class="cat-status" id="catStatus">Catalogo vacio.</span>
-      <div>
-        <button class="btn btn-ghost btn-sm" onclick="vaciarCatalogo()">Vaciar Catalogo</button>
-        <button class="btn btn-blue btn-sm" id="btnImportarCatalogo" onclick="importarCatalogoConfirmado()" disabled>Importar al Catalogo</button>
-      </div>
-    </div>
-  </div>
-
   <div class="card modo-agrupado">
     <h2>Parametros Globales</h2>
     <div class="grid grid-6">
@@ -356,12 +336,7 @@
   </div>
 
   <div class="card modo-agrupado">
-    <h2>Agregar Producto</h2>
-    <div class="field cat-search-wrap" style="margin-bottom:14px">
-      <label>Buscar en Catalogo (autocompleta nombre y precio del proveedor)</label>
-      <input type="text" id="fBuscarCatalogo" placeholder="Ej: laptop, monitor, cable..." oninput="buscarEnCatalogo('fBuscarCatalogo','agrupado')" autocomplete="off">
-      <div class="cat-results" id="catResultsAgrupado"></div>
-    </div>
+    <h2>Agregar Producto <span id="editandoBadge" class="edit-badge hidden">Editando item &mdash; <button type="button" class="link-btn" onclick="cancelarEdicionProducto()">Cancelar</button></span></h2>
     <div class="grid grid-4">
       <div class="field"><label>Categoria</label>
         <select id="fCat" class="lockable" onchange="onCatChange()">
@@ -388,9 +363,7 @@
     <div class="form-actions">
       <button class="btn btn-blue lockable" id="btnAgregarItem" onclick="agregarProducto()">Agregar Item</button>
     </div>
-  </div>
-
-  <div class="card modo-agrupado">
+  </div>  <div class="card modo-agrupado">
     <h2>Estructura de Costos e Items</h2>
     <div class="tbl-outer">
       <div class="tbl-inner">
@@ -428,9 +401,19 @@
     <button class="btn btn-green" onclick="exportarHTML()">Exportar como HTML</button>
     <button class="btn btn-ghost" style="margin-left:10px" onclick="agregarDemo()">Cargar datos de ejemplo</button>
     <button class="btn btn-blue" style="margin-left:10px;background:#25D366" onclick="enviarPorWhatsApp('agrupado')">Enviar por WhatsApp</button>
+    <button class="btn btn-blue" style="margin-left:10px;background:#128C7E" onclick="compartirDocumentoWhatsApp('agrupado')">Enviar Propuesta (.html) por WhatsApp</button>
+    <button class="btn btn-ghost" style="margin-left:10px" onclick="byId('importarCotizacionInput').click()">Importar Cotizacion (.html)</button>
+    <input type="file" id="importarCotizacionInput" accept=".html,.htm" style="display:none" onchange="handleImportarCotizacionFile(event)">
     <div style="font-size:10.5px;color:var(--txt-muted);margin-top:10px">
       En Chrome o Edge se abrira el dialogo nativo para elegir la carpeta de guardado. En otros navegadores se usara la descarga estandar.<br>
-      WhatsApp envia un resumen de texto; el archivo HTML se comparte por separado (adjuntalo manualmente si lo necesitas).
+      "Enviar por WhatsApp" envia un resumen de texto. "Enviar Propuesta (.html)" adjunta el documento como archivo real usando
+      el panel de Compartir del sistema (funciona en Chrome/Edge Android y navegadores compatibles); si el navegador no lo soporta,
+      se descarga el archivo automaticamente para que lo adjuntes manualmente.<br>
+      "Importar Cotizacion (.html)" carga un archivo previamente exportado con esta herramienta. Si el archivo se genero con
+      "Exportar como HTML" (o "Exportar" desde el Historial), se recuperan TODOS los datos internos (Cant., Compra USD,
+      Mejor Proveedor, Tipo de Cambio, Margen Comercial %, Flete S/. y M.O. S/.), listos para seguir editando. Si en cambio
+      el archivo se genero con "Enviar Propuesta (.html) por WhatsApp" (el que va al cliente), esos costos internos nunca
+      viajan en el archivo y solo se recupera el Precio Unitario ya calculado.
     </div>
   </div>
 
@@ -444,10 +427,6 @@
     <div class="grid grid-4">
       <div class="field"><label>Nombre / Especificacion</label><input type="text" id="altNombre" class="lockable" placeholder="Ej: Laptop Lenovo ThinkPad E16"></div>
       <div class="field"><label>Descripcion corta</label><input type="text" id="altDescripcion" class="lockable" placeholder="Ej: i7, 16GB RAM, 512GB SSD"></div>
-      <div class="field cat-search-wrap"><label>Buscar en Catalogo</label>
-        <input type="text" id="fBuscarCatalogoAlt" class="lockable" placeholder="Ej: laptop..." oninput="buscarEnCatalogo('fBuscarCatalogoAlt','alternativas')" autocomplete="off">
-        <div class="cat-results" id="catResultsAlternativas"></div>
-      </div>
       <div class="field"><label>Costo Proveedor Neto (S/.)</label><input type="number" id="altCosto" class="lockable" value="0" step="0.01"></div>
       <div class="field"><label>Flete / Gastos Oper. (S/.)</label><input type="number" id="altFlete" class="lockable" value="0" step="0.01"></div>
       <div class="field"><label>Margen Comercial %</label><input type="number" id="altMargen" class="lockable" value="20" step="1"></div>
@@ -472,6 +451,7 @@
     <div class="form-actions" style="margin-top:16px">
       <button class="btn btn-ghost" onclick="exportarAlternativasHTML()">Exportar Comparativa como HTML</button>
       <button class="btn" style="background:#25D366;color:#fff;margin-left:10px" onclick="enviarPorWhatsApp('alternativas')">Enviar por WhatsApp</button>
+      <button class="btn" style="background:#128C7E;color:#fff;margin-left:10px" onclick="compartirDocumentoWhatsApp('alternativas')">Enviar Propuesta (.html) por WhatsApp</button>
     </div>
   </div>
 
@@ -558,6 +538,7 @@
 <script type="text/javascript">
 var productos = [];
 var nextId = 1;
+var editandoProductoId = null;
 var isLocked = false;
 var historial = [];
 var lastCtx = null;
@@ -565,10 +546,6 @@ var lastTotals = { costo: 0, pv: 0, gan: 0 };
 var alternativas = [];
 var nextAltId = 1;
 var modoCotizacion = 'agrupado';
-var catalogo = [];
-var catParsedHeaders = [];
-var catParsedDataRows = [];
-var catBusquedaResultados = [];
 
 // ============================================================
 // PERSISTENCIA: window.storage (NO usar localStorage, bloqueado en este entorno)
@@ -577,6 +554,8 @@ var catBusquedaResultados = [];
 // ============================================================
 var STORAGE_KEY_HIST = 'cpv:historial';
 var STORAGE_KEY_DRAFT = 'cpv:draft';
+var STORAGE_KEY_LOGO = 'cpv:logo';
+var logoDataUrl = null;
 var storageAvailable = (typeof window !== 'undefined' && window.storage &&
   typeof window.storage.get === 'function' && typeof window.storage.set === 'function');
 var draftSaveTimer = null;
@@ -603,6 +582,56 @@ async function storageSetSafe(key, value, silencioso){
     }
   }
   return false;
+}
+
+// ============================================================
+// LOGO PERSONALIZADO (PNG/JPEG) para el encabezado de la app y para
+// el documento de propuesta exportado. Se guarda como Data URL.
+// ============================================================
+function aplicarLogo(){
+  var svg = byId('brandLogoSvg');
+  var img = byId('brandLogoImg');
+  if(logoDataUrl){
+    if(img){ img.src = logoDataUrl; img.style.display = 'block'; }
+    if(svg){ svg.style.display = 'none'; }
+  } else {
+    if(img){ img.style.display = 'none'; img.removeAttribute('src'); }
+    if(svg){ svg.style.display = ''; }
+  }
+}
+
+async function guardarLogoStorage(){
+  if(!storageAvailable) return;
+  await storageSetSafe(STORAGE_KEY_LOGO, logoDataUrl || '', true);
+}
+
+async function cargarLogoStorage(){
+  if(!storageAvailable) return;
+  try{
+    var res = await window.storage.get(STORAGE_KEY_LOGO, false);
+    if(res && res.value){ logoDataUrl = res.value; }
+  } catch(e){ /* clave aun no existe */ }
+}
+
+function handleLogoFile(event){
+  var file = event.target.files && event.target.files[0];
+  if(!file) return;
+  if(!/^image\/(png|jpeg)$/.test(file.type)){
+    alert('Solo se permiten archivos PNG o JPEG.');
+    event.target.value = '';
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e){
+    logoDataUrl = String(e.target.result);
+    aplicarLogo();
+    guardarLogoStorage();
+  };
+  reader.onerror = function(){
+    alert('No se pudo leer la imagen. Intenta con otro archivo.');
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
 }
 
 async function guardarHistorialStorage(){
@@ -696,251 +725,6 @@ async function cargarDraftStorage(){
   }
 }
 
-// ============================================================
-// CATALOGO DE PROVEEDORES: importar CSV, mapear columnas, buscar
-// ============================================================
-var STORAGE_KEY_CAT = 'cpv:catalogo';
-
-async function guardarCatalogoStorage(){
-  if(!storageAvailable) return;
-  await storageSetSafe(STORAGE_KEY_CAT, JSON.stringify(catalogo), false);
-}
-
-async function cargarCatalogoStorage(){
-  if(!storageAvailable) return;
-  try{
-    var res = await window.storage.get(STORAGE_KEY_CAT, false);
-    if(res && res.value){
-      var parsed = JSON.parse(res.value);
-      if(Array.isArray(parsed)) catalogo = parsed;
-    }
-  } catch(e){ /* clave aun no existe */ }
-}
-
-function actualizarEstadoCatalogo(){
-  var el = byId('catStatus');
-  if(!el) return;
-  if(catalogo.length === 0){
-    el.innerHTML = 'Catalogo vacio.';
-    return;
-  }
-  var porProv = {};
-  for(var i=0;i<catalogo.length;i++){
-    var pv = catalogo[i].proveedor || 'Otros';
-    porProv[pv] = (porProv[pv]||0) + 1;
-  }
-  var partes = [];
-  var keys = Object.keys(porProv);
-  for(i=0;i<keys.length;i++){ partes.push(keys[i] + ': <b>' + porProv[keys[i]] + '</b>'); }
-  el.innerHTML = '<b>' + catalogo.length + '</b> producto(s) en catalogo &middot; ' + partes.join(' &middot; ');
-}
-
-function splitCsvLine(line, delim){
-  var out = [];
-  var cur = '';
-  var inQuotes = false;
-  for(var i=0;i<line.length;i++){
-    var ch = line[i];
-    if(ch === '"'){ inQuotes = !inQuotes; continue; }
-    if(ch === delim && !inQuotes){ out.push(cur.trim()); cur = ''; continue; }
-    cur += ch;
-  }
-  out.push(cur.trim());
-  return out;
-}
-
-function parseCsvText(text){
-  var lines = text.split(/\r\n|\n/).filter(function(l){ return l.replace(/[;, ]/g,'') !== ''; });
-  if(lines.length === 0) return { headers: [], rows: [] };
-  var firstLine = lines[0];
-  var countSemi = (firstLine.match(/;/g) || []).length;
-  var countComma = (firstLine.match(/,/g) || []).length;
-  var delim = countSemi >= countComma ? ';' : ',';
-
-  var allRows = [];
-  for(var i=0;i<lines.length;i++){ allRows.push(splitCsvLine(lines[i], delim)); }
-
-  var headers = allRows[0];
-  var dataRows = allRows.slice(1);
-  return { headers: headers, rows: dataRows };
-}
-
-function parsePrecioCsv(str){
-  if(str === null || str === undefined) return 0;
-  var raw = String(str).trim();
-  if(!raw) return 0;
-  raw = raw.replace(/[^0-9,.\-]/g, '');
-  if(!raw) return 0;
-  var hasComma = raw.indexOf(',') !== -1;
-  var hasDot = raw.indexOf('.') !== -1;
-  var normalized;
-  if(hasComma && hasDot){
-    normalized = raw.lastIndexOf(',') > raw.lastIndexOf('.')
-      ? raw.replace(/\./g,'').replace(',', '.')
-      : raw.replace(/,/g,'');
-  } else if(hasComma){
-    var parts = raw.split(',');
-    normalized = (parts.length > 2 || parts[parts.length-1].length === 3) ? parts.join('') : parts.join('.');
-  } else {
-    normalized = raw;
-  }
-  var n = parseFloat(normalized);
-  return isNaN(n) ? 0 : n;
-}
-
-function handleCatalogoFile(event){
-  var file = event.target.files && event.target.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e){
-    var parsed = parseCsvText(String(e.target.result));
-    catParsedHeaders = parsed.headers;
-    catParsedDataRows = parsed.rows;
-
-    var selNombre = byId('catColNombre');
-    var selPrecio = byId('catColPrecio');
-    selNombre.innerHTML = '';
-    selPrecio.innerHTML = '';
-    for(var i=0;i<catParsedHeaders.length;i++){
-      var etiqueta = catParsedHeaders[i] || ('Columna ' + (i+1));
-      var opt1 = document.createElement('option');
-      opt1.value = i; opt1.textContent = 'Col ' + (i+1) + ': ' + etiqueta;
-      selNombre.appendChild(opt1);
-      var opt2 = document.createElement('option');
-      opt2.value = i; opt2.textContent = 'Col ' + (i+1) + ': ' + etiqueta;
-      selPrecio.appendChild(opt2);
-    }
-    selNombre.disabled = false;
-    selPrecio.disabled = false;
-    byId('btnImportarCatalogo').disabled = false;
-
-    var previewRows = catParsedDataRows.slice(0, 5);
-    var html = '<div class="cat-preview-wrap"><table class="cat-preview-table"><thead><tr>';
-    for(i=0;i<catParsedHeaders.length;i++){ html += '<th>Col ' + (i+1) + ': ' + (catParsedHeaders[i]||'-') + '</th>'; }
-    html += '</tr></thead><tbody>';
-    for(var r=0;r<previewRows.length;r++){
-      html += '<tr>';
-      for(i=0;i<catParsedHeaders.length;i++){ html += '<td>' + (previewRows[r][i]||'') + '</td>'; }
-      html += '</tr>';
-    }
-    html += '</tbody></table></div>';
-    html += '<div style="font-size:11px;color:var(--txt-muted);margin-top:6px">Vista previa: primeras 5 filas de ' + catParsedDataRows.length + ' encontradas.</div>';
-    byId('catPreviewWrap').innerHTML = html;
-  };
-  reader.onerror = function(){
-    alert('No se pudo leer el archivo. Verifica que sea un CSV valido.');
-  };
-  reader.readAsText(file, 'utf-8');
-}
-
-function importarCatalogoConfirmado(){
-  if(catParsedDataRows.length === 0){
-    alert('Sube un archivo CSV primero.');
-    return;
-  }
-  var colNombre = parseInt(byId('catColNombre').value);
-  var colPrecio = parseInt(byId('catColPrecio').value);
-  var proveedor = byId('catProveedor').value;
-
-  var agregados = 0;
-  for(var i=0;i<catParsedDataRows.length;i++){
-    var fila = catParsedDataRows[i];
-    var nombre = (fila[colNombre] || '').trim();
-    var precio = parsePrecioCsv(fila[colPrecio]);
-    if(!nombre || precio <= 0) continue;
-
-    var existente = null;
-    for(var j=0;j<catalogo.length;j++){
-      if(catalogo[j].nombre === nombre && catalogo[j].proveedor === proveedor){ existente = catalogo[j]; break; }
-    }
-    if(existente){ existente.precio = precio; }
-    else{ catalogo.push({ nombre: nombre, precio: precio, proveedor: proveedor }); }
-    agregados++;
-  }
-
-  guardarCatalogoStorage();
-  actualizarEstadoCatalogo();
-  alert(agregados + ' producto(s) importado(s) al catalogo (' + proveedor + ').');
-
-  byId('catFile').value = '';
-  byId('catColNombre').innerHTML = '<option value="">Sube un archivo primero</option>';
-  byId('catColPrecio').innerHTML = '<option value="">Sube un archivo primero</option>';
-  byId('catColNombre').disabled = true;
-  byId('catColPrecio').disabled = true;
-  byId('btnImportarCatalogo').disabled = true;
-  byId('catPreviewWrap').innerHTML = '';
-  catParsedHeaders = [];
-  catParsedDataRows = [];
-}
-
-function vaciarCatalogo(){
-  if(catalogo.length === 0) return;
-  showConfirm('Esto eliminara permanentemente los ' + catalogo.length + ' producto(s) del catalogo. Continuar?', function(){
-    catalogo = [];
-    guardarCatalogoStorage();
-    actualizarEstadoCatalogo();
-  });
-}
-
-function buscarEnCatalogo(inputId, contexto){
-  var q = (byId(inputId).value || '').trim().toLowerCase();
-  var resultsId = contexto === 'alternativas' ? 'catResultsAlternativas' : 'catResultsAgrupado';
-  var resultsEl = byId(resultsId);
-  if(q.length < 2){
-    resultsEl.classList.remove('show');
-    resultsEl.innerHTML = '';
-    return;
-  }
-  catBusquedaResultados = catalogo.filter(function(c){
-    return c.nombre.toLowerCase().indexOf(q) !== -1;
-  }).slice(0, 8);
-
-  if(catBusquedaResultados.length === 0){
-    resultsEl.innerHTML = '<div class="cat-result-item"><span class="rn">Sin resultados en el catalogo</span></div>';
-    resultsEl.classList.add('show');
-    return;
-  }
-
-  var html = '';
-  for(var i=0;i<catBusquedaResultados.length;i++){
-    var c = catBusquedaResultados[i];
-    html += '<div class="cat-result-item" onclick="seleccionarCatalogoItem(' + i + ',\'' + contexto + '\')">' +
-      '<span class="rn">' + c.nombre + '<br><span class="rprov">' + c.proveedor + '</span></span>' +
-      '<span class="rp">$ ' + fmt(c.precio) + '</span>' +
-      '</div>';
-  }
-  resultsEl.innerHTML = html;
-  resultsEl.classList.add('show');
-}
-
-function seleccionarCatalogoItem(idx, contexto){
-  var item = catBusquedaResultados[idx];
-  if(!item) return;
-
-  if(contexto === 'alternativas'){
-    byId('altNombre').value = item.nombre;
-    var tcActualAlt = gv('tc') || 3.75;
-    byId('altCosto').value = (item.precio * tcActualAlt).toFixed(2);
-    byId('fBuscarCatalogoAlt').value = '';
-    byId('catResultsAlternativas').classList.remove('show');
-    return;
-  }
-
-  byId('fNombre').value = item.nombre;
-  byId('fCat').value = 'T';
-  onCatChange();
-  var campoProv = { Ingram:'fIngram', Intcomex:'fIntcomex', Deltron:'fDeltron', Otros:'fOtros' }[item.proveedor] || 'fOtros';
-  byId(campoProv).value = item.precio;
-  byId('fBuscarCatalogo').value = '';
-  byId('catResultsAgrupado').classList.remove('show');
-}
-
-document.addEventListener('click', function(evt){
-  if(!evt.target.closest('.cat-search-wrap')){
-    var r1 = byId('catResultsAgrupado'); if(r1) r1.classList.remove('show');
-    var r2 = byId('catResultsAlternativas'); if(r2) r2.classList.remove('show');
-  }
-});
 var PROVEEDORES = ['Ingram', 'Intcomex', 'Deltron', 'Otros'];
 var PROV_KEYS = ['i', 'x', 'd', 'o'];
 var FLETE_IDS = ['fleteIngram', 'fleteIntcomex', 'fleteDeltron', 'fleteOtros'];
@@ -987,7 +771,7 @@ function fechaLarga(d){
 // Precio Unitario se muestra en Moneda Local (S/.); Total Price y los
 // totales (Subtotal/IGV/Total) se muestran en USD, usando el T.C. de cada item.
 // ============================================================
-function buildDocumentoProfesionalHtml(opciones){
+function buildDocumentoProfesionalHtml(opciones, datosInternos){
   var cliente = (byId('docCliente') && byId('docCliente').value) || 'Cliente';
   var direccion = (byId('docDireccion') && byId('docDireccion').value) || '';
   var ubicacion = (byId('docUbicacion') && byId('docUbicacion').value) || '';
@@ -1019,10 +803,11 @@ function buildDocumentoProfesionalHtml(opciones){
       igvUSD += lineIgvLocal / tcItem;
       totalUSD += lineTotalUSD;
 
+      var precioUnitarioUSD = it.precioUnitario / tcItem;
       filasHtml += '<tr class="pd-item-row">' +
         '<td class="pd-desc"><div class="pd-name">' + it.nombre + '</div></td>' +
         '<td class="pd-num">' + it.cantidad.toFixed(2) + '<br><span class="pd-unit">Unidades</span></td>' +
-        '<td class="pd-num">S/ ' + fmt(it.precioUnitario) + '</td>' +
+        '<td class="pd-num">$ ' + fmt(precioUnitarioUSD) + '</td>' +
         '<td class="pd-num">' + (it.igvPct > 0 ? '<span class="pd-igv-tag">IGV</span>' : '-') + '</td>' +
         '<td class="pd-num pd-total-cell">$ ' + fmt(lineTotalUSD) + '</td>' +
         '</tr>';
@@ -1033,7 +818,7 @@ function buildDocumentoProfesionalHtml(opciones){
 
     opcionesHtml += (op.titulo ? '<div class="pd-option-title">' + op.titulo + '</div>' : '') +
       '<table class="pd-table"><thead><tr>' +
-        '<th style="text-align:left">Descripcion</th><th>Cantidad</th><th>Precio unitario</th><th>Impuestos</th><th>Total Price</th>' +
+        '<th style="text-align:left">Descripcion</th><th>Cantidad</th><th>Precio Unitario ($)</th><th>Impuestos</th><th>Total Price</th>' +
       '</tr></thead><tbody>' + filasHtml + '</tbody></table>' +
       '<div class="pd-totales">' +
         '<div class="pd-tot-row"><span>Subtotal</span><b>$ ' + fmt(subtotalUSD) + '</b></div>' +
@@ -1048,7 +833,7 @@ function buildDocumentoProfesionalHtml(opciones){
   html.push('*{box-sizing:border-box}body{margin:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;color:#1e293b;padding:24px}');
   html.push('.pd-doc{max-width:800px;margin:0 auto;background:#fff;padding:36px 42px;border:1px solid #e2e8f0}');
   html.push('.pd-logo-row{display:flex;align-items:center;gap:12px}');
-  html.push('.pd-logo-badge{width:40px;height:40px;flex-shrink:0}');
+  html.push('.pd-logo-badge{width:40px;height:40px;flex-shrink:0;object-fit:contain}');
   html.push('.pd-brand-name{font-size:22px;font-weight:800;color:#152B44;letter-spacing:.5px;margin:0}');
   html.push('.pd-brand-sub{font-size:10px;color:#1A86F1;font-weight:700;letter-spacing:1px;margin:0}');
   html.push('.pd-tagline{font-size:10.5px;color:#152B44;font-weight:700;margin:10px 0 6px}');
@@ -1082,14 +867,26 @@ function buildDocumentoProfesionalHtml(opciones){
   html.push('.pd-conditions{margin-top:30px;border-top:2px solid #152B44;padding-top:14px}');
   html.push('.pd-conditions h4{font-size:11px;color:#152B44;text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px}');
   html.push('.pd-conditions p{font-size:10.5px;color:#64748b;margin:0}');
+  html.push('.pd-internal-sep{border:none;border-top:4px solid #dc2626;margin:26px 0 0}');
+  html.push('.pd-internal-wrap{max-width:800px;margin:0 auto}');
+  html.push('.pd-internal-block{background:#f8fafc;border:1px solid #e2e8f0;border-top:none;padding:14px 18px 18px}');
+  html.push('.pd-internal-title{font-size:10.5px;font-weight:800;color:#d97706;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}');
+  html.push('.pd-internal-table{width:100%;border-collapse:collapse;font-size:11px}');
+  html.push('.pd-internal-table thead th{background:#fff;color:#64748b;font-size:9px;text-transform:uppercase;letter-spacing:.3px;text-align:right;padding:6px 8px;border-bottom:1px solid #cbd5e1}');
+  html.push('.pd-internal-table thead th:first-child{text-align:left}');
+  html.push('.pd-internal-table td{padding:6px 8px;text-align:right;border-bottom:1px solid #e2e8f0}');
+  html.push('.pd-internal-table td:first-child{text-align:left;font-weight:600;color:#152B44}');
   html.push('</style></head><body>');
   html.push('<div class="pd-doc">');
-  html.push('<div class="pd-logo-row"><svg class="pd-logo-badge" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-    '<path d="M158 44 A82 82 0 1 0 158 156" stroke="#152B44" stroke-width="22" fill="none" stroke-linecap="round"></path>' +
-    '<path d="M140 64 A55 55 0 1 0 140 136" stroke="#152B44" stroke-width="18" fill="none" stroke-linecap="round"></path>' +
-    '<rect x="80" y="118" width="24" height="42" rx="3" fill="#1A86F1"></rect>' +
-    '<rect x="112" y="98" width="24" height="62" rx="3" fill="#1A86F1"></rect>' +
-    '<rect x="144" y="72" width="24" height="88" rx="3" fill="#1A86F1"></rect></svg>' +
+  var logoHtml = logoDataUrl
+    ? '<img class="pd-logo-badge" src="' + logoDataUrl + '" alt="Logo">'
+    : ('<svg class="pd-logo-badge" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M158 44 A82 82 0 1 0 158 156" stroke="#152B44" stroke-width="22" fill="none" stroke-linecap="round"></path>' +
+      '<path d="M140 64 A55 55 0 1 0 140 136" stroke="#152B44" stroke-width="18" fill="none" stroke-linecap="round"></path>' +
+      '<rect x="80" y="118" width="24" height="42" rx="3" fill="#1A86F1"></rect>' +
+      '<rect x="112" y="98" width="24" height="62" rx="3" fill="#1A86F1"></rect>' +
+      '<rect x="144" y="72" width="24" height="88" rx="3" fill="#1A86F1"></rect></svg>');
+  html.push('<div class="pd-logo-row">' + logoHtml +
     '<div><p class="pd-brand-name">COSEINCO</p><p class="pd-brand-sub">SOLUCIONES TECNOLOGICAS</p></div></div>');
   html.push('<div class="pd-tagline">Venta Alquiler, Mantenimiento y Reparacion de Equipos de Computo y Aire Acondicionado</div>');
   html.push('<hr class="pd-hr">');
@@ -1108,7 +905,37 @@ function buildDocumentoProfesionalHtml(opciones){
   html.push(opcionesHtml);
   html.push('<div class="pd-conditions"><h4>Condiciones Comerciales</h4>' +
     '<p>955416047 - 980124924 - 999706965 &middot; comercial@coseinco.com.pe &middot; http://coseinco.com.pe</p></div>');
-  html.push('</div></body></html>');
+  html.push('</div>');
+  if(datosInternos){
+    html.push('<div class="pd-internal-wrap">');
+    html.push('<hr class="pd-internal-sep">');
+    html.push('<div class="pd-internal-block">');
+    html.push('<div class="pd-internal-title">Detalle Interno (No se envia por WhatsApp)</div>');
+    html.push('<table class="pd-internal-table"><thead><tr>' +
+      '<th style="text-align:left">Item</th><th>Cant.</th><th>Compra USD</th><th>Mejor Proveedor</th>' +
+      '<th>Tipo de Cambio</th><th>Margen Comercial %</th><th>Flete S/.</th><th>M.O. S/.</th>' +
+      '</tr></thead><tbody>');
+    for(var fi=0; fi<datosInternos.filas.length; fi++){
+      var f = datosInternos.filas[fi];
+      html.push('<tr>' +
+        '<td style="text-align:left">' + f.nombre + '</td>' +
+        '<td>' + f.cantidad + '</td>' +
+        '<td>' + (f.compraUSD != null ? '$' + fmt(f.compraUSD) : '-') + '</td>' +
+        '<td>' + (f.mejorProveedor || '-') + '</td>' +
+        '<td>' + fmt(datosInternos.tcGlobal) + '</td>' +
+        '<td>' + fmt(datosInternos.margenGlobalPct) + '%</td>' +
+        '<td>' + (f.fleteSoles > 0 ? fmt(f.fleteSoles) : '-') + '</td>' +
+        '<td>' + (f.moSoles > 0 ? fmt(f.moSoles) : '-') + '</td>' +
+        '</tr>');
+    }
+    html.push('</tbody></table></div></div>');
+    try{
+      var jsonStr = JSON.stringify({ cliente: { nombre: cliente, direccion: direccion, ubicacion: ubicacion, ruc: ruc, comercial: comercial, ciudadEmision: ciudadEmision }, datos: datosInternos.snapshot });
+      var b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+      html.push('<script type="application/json" id="cpv-internal-data" style="display:none">' + b64 + '<' + '/script>');
+    } catch(e){ /* si falla la codificacion, se omite el bloque interno sin afectar el documento visible */ }
+  }
+  html.push('</body></html>');
   return html.join('');
 }
 
@@ -1387,7 +1214,8 @@ function buildRowHtml(p, idx, r, dis){
   var tcRow = getTC();
   var pvTotalUSD = tcRow > 0 ? (r.pvTotal / tcRow) : 0;
   html += '<td class="num metric-usd" style="color:var(--blue-dark);font-weight:700">$ ' + fmt(pvTotalUSD) + '</td>';
-  html += '<td><button class="btn btn-danger btn-sm" ' + dis + ' onclick="eliminarProducto(' + p.id + ')">X</button></td>';
+  html += '<td><button class="btn btn-blue btn-sm" ' + dis + ' onclick="editarProducto(' + p.id + ')">Editar</button> ' +
+    '<button class="btn btn-danger btn-sm" ' + dis + ' onclick="eliminarProducto(' + p.id + ')">X</button></td>';
   return html;
 }
 
@@ -1769,6 +1597,29 @@ function agregarProducto(){
   var tangible = byId('fTangible').checked;
   var ensamble = byId('fEnsamble').checked;
 
+  if(editandoProductoId !== null){
+    var existente = null;
+    for(var k=0;k<productos.length;k++){
+      if(productos[k].id === editandoProductoId){ existente = productos[k]; break; }
+    }
+    if(existente){
+      existente.cat = cat;
+      existente.nombre = nombre;
+      existente.qty = qty;
+      existente.tangible = tangible;
+      existente.ensamble = ensamble;
+      existente.i = 0; existente.x = 0; existente.d = 0; existente.o = 0; existente.precioDirecto = 0;
+      if(cat === 'T'){
+        existente.i = gv('fIngram'); existente.x = gv('fIntcomex'); existente.d = gv('fDeltron'); existente.o = gv('fOtros');
+      } else if(cat !== 'V'){
+        existente.precioDirecto = gv('fPrecioDirecto');
+      }
+    }
+    cancelarEdicionProducto();
+    recalcularTodo();
+    return;
+  }
+
   var p = { id: nextId, cat: cat, nombre: nombre, qty: qty, tangible: tangible, ensamble: ensamble,
     i:0, x:0, d:0, o:0, precioDirecto:0, selected:false };
   nextId = nextId + 1;
@@ -1790,6 +1641,53 @@ function agregarProducto(){
   recalcularTodo();
 }
 
+function editarProducto(id){
+  if(isLocked){
+    alert('La cotizacion esta guardada. Presiona Editar para modificarla.');
+    return;
+  }
+  var p = null;
+  for(var i=0;i<productos.length;i++){
+    if(productos[i].id === id){ p = productos[i]; break; }
+  }
+  if(!p) return;
+
+  editandoProductoId = id;
+  byId('fCat').value = p.cat;
+  byId('fNombre').value = p.nombre;
+  byId('fQty').value = p.qty;
+  byId('fTangible').checked = p.tangible;
+  byId('fEnsamble').checked = p.ensamble;
+  onCatChange();
+  byId('fIngram').value = p.i || 0;
+  byId('fIntcomex').value = p.x || 0;
+  byId('fDeltron').value = p.d || 0;
+  byId('fOtros').value = p.o || 0;
+  byId('fPrecioDirecto').value = p.precioDirecto || 0;
+
+  byId('editandoBadge').classList.remove('hidden');
+  byId('btnAgregarItem').textContent = 'Guardar Cambios';
+  var card = byId('fNombre').closest('.card');
+  if(card && card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelarEdicionProducto(){
+  editandoProductoId = null;
+  byId('fCat').value = 'T';
+  byId('fNombre').value = '';
+  byId('fQty').value = 1;
+  byId('fTangible').checked = true;
+  byId('fEnsamble').checked = false;
+  onCatChange();
+  byId('fIngram').value = 0;
+  byId('fIntcomex').value = 0;
+  byId('fDeltron').value = 0;
+  byId('fOtros').value = 0;
+  byId('fPrecioDirecto').value = 0;
+  byId('editandoBadge').classList.add('hidden');
+  byId('btnAgregarItem').textContent = 'Agregar Item';
+}
+
 function eliminarProducto(id){
   if(isLocked) return;
   var nuevos = [];
@@ -1797,6 +1695,7 @@ function eliminarProducto(id){
     if(productos[i].id !== id) nuevos.push(productos[i]);
   }
   productos = nuevos;
+  if(editandoProductoId === id) cancelarEdicionProducto();
   recalcularTodo();
 }
 
@@ -1961,6 +1860,68 @@ function enviarPorWhatsApp(modo){
   abrirWhatsApp(buildMensajeAgrupado(nota, productos, lastCtx, lastTotals.pv, lastTotals.gan));
 }
 
+// ============================================================
+// ENVIAR EL DOCUMENTO (.html) COMO ARCHIVO ADJUNTO POR WHATSAPP
+// Usa la Web Share API (nivel 2, con archivos) cuando el navegador la
+// soporta (Chrome/Edge en Android, algunos en desktop): abre el panel
+// nativo de "Compartir" del sistema, donde WhatsApp aparece como una
+// de las apps destino y el archivo .html se adjunta tal cual, no como
+// texto. Si el navegador no soporta compartir archivos (ej. iOS Safari
+// en ciertas versiones, o desktop sin soporte), se hace fallback:
+// se descarga el archivo .html y se abre WhatsApp con un mensaje de
+// texto pidiendo adjuntarlo manualmente.
+// ============================================================
+async function compartirDocumentoWhatsApp(modo){
+  var nota = byId('notaRapida').value || 'cotizacion';
+  var htmlFinal, safeName;
+
+  if(modo === 'alternativas'){
+    if(alternativas.length === 0){
+      alert('Agrega al menos una alternativa antes de enviar.');
+      return;
+    }
+    htmlFinal = buildAlternativasHtmlDocument(nota, alternativas);
+    safeName = 'cotizacion_comparativa_' + nota.replace(/\s+/g, '_').toLowerCase() + '.html';
+  } else {
+    if(productos.length === 0){
+      alert('Agrega al menos un producto antes de enviar.');
+      return;
+    }
+    if(!lastCtx){
+      alert('No se pudo calcular el contexto actual. Intenta de nuevo.');
+      return;
+    }
+    var tc = getTC(), margen = getMargen();
+    htmlFinal = buildQuoteHtmlDocument(nota, tc, margen, productos, lastCtx, lastTotals.pv, lastTotals.gan);
+    safeName = 'cotizacion_' + nota.replace(/\s+/g, '_').toLowerCase() + '.html';
+  }
+
+  var file = new File([htmlFinal], safeName, { type: 'text/html' });
+
+  if(navigator.canShare && navigator.canShare({ files: [file] })){
+    try{
+      await navigator.share({
+        files: [file],
+        title: 'Cotizacion COSEINCO',
+        text: 'Cotizacion COSEINCO - ' + nota
+      });
+      return;
+    } catch(err){
+      if(err && err.name === 'AbortError') return;
+      console.warn('No se pudo abrir el panel de compartir, se usa el metodo alternativo.', err);
+    }
+  }
+
+  // Fallback: descarga el archivo y abre WhatsApp con un mensaje de texto
+  descargarHtml(htmlFinal, safeName);
+  alert('Tu navegador no permite adjuntar archivos directamente a WhatsApp. Se descargo el archivo "' + safeName + '"; a continuacion se abrira WhatsApp para que lo adjuntes manualmente desde el chat.');
+  if(modo === 'alternativas'){
+    abrirWhatsApp(buildMensajeAlternativas(nota, alternativas));
+  } else {
+    abrirWhatsApp(buildMensajeAgrupado(nota, productos, lastCtx, lastTotals.pv, lastTotals.gan));
+  }
+}
+
 function historialEnviarWhatsApp(id){
   var h = buscarEnHistorial(id);
   if(!h) return;
@@ -1976,7 +1937,7 @@ function historialEnviarWhatsApp(id){
   var ctx = { tc: h.params.tc, margen: h.params.margen/100, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: h.params.visita };
   abrirWhatsApp(buildMensajeAgrupado(h.nota, h.productos, ctx, h.totales.pv, h.totales.gan));
 }
-function buildQuoteHtmlDocument(nota, tc, margen, productosArr, ctx, totPV, totGan){
+function buildQuoteHtmlDocument(nota, tc, margen, productosArr, ctx, totPV, totGan, incluirDatosInternos){
   var igvPct = gv('agrupadoIGV');
   if(isNaN(igvPct)) igvPct = 18;
   var items = [];
@@ -1992,7 +1953,43 @@ function buildQuoteHtmlDocument(nota, tc, margen, productosArr, ctx, totPV, totG
       tc: ctx.tc
     });
   }
-  return buildDocumentoProfesionalHtml([{ titulo: null, items: items }]);
+  var datosInternos = null;
+  if(incluirDatosInternos){
+    var margenPct = Math.round(margen * 10000) / 100;
+    var filasInternas = [];
+    for(var j=0;j<productosArr.length;j++){
+      var p2 = productosArr[j];
+      var r2 = calcularFila(p2, ctx);
+      filasInternas.push({
+        nombre: p2.nombre,
+        cantidad: p2.qty,
+        compraUSD: p2.cat === 'T' ? r2.compraUSD : null,
+        mejorProveedor: r2.mejorProv ? r2.mejorProv.prov : null,
+        fleteSoles: r2.fleteSoles,
+        moSoles: r2.moSoles
+      });
+    }
+    datosInternos = {
+      filas: filasInternas,
+      tcGlobal: tc,
+      margenGlobalPct: margenPct,
+      snapshot: {
+        tipo: 'agrupado',
+        nota: nota,
+        productos: JSON.parse(JSON.stringify(productosArr)),
+        params: {
+          tc: tc, margen: margenPct,
+          manoObraTotal: gv('manoObraTotal'), visita: gv('visita'),
+          fleteIngram: ctx.fletesGlobal ? ctx.fletesGlobal[0] : gv('fleteIngram'),
+          fleteIntcomex: ctx.fletesGlobal ? ctx.fletesGlobal[1] : gv('fleteIntcomex'),
+          fleteDeltron: ctx.fletesGlobal ? ctx.fletesGlobal[2] : gv('fleteDeltron'),
+          fleteOtros: ctx.fletesGlobal ? ctx.fletesGlobal[3] : gv('fleteOtros')
+        },
+        totales: { pv: totPV, gan: totGan }
+      }
+    };
+  }
+  return buildDocumentoProfesionalHtml([{ titulo: null, items: items }], datosInternos);
 }
 
 // ============================================================
@@ -2072,14 +2069,240 @@ function exportarHTML(){
   var ctx = { tc: tc, margen: margen, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: visita };
   var nota = byId('notaRapida').value || 'Sin nota';
 
-  var htmlFinal = buildQuoteHtmlDocument(nota, tc, margen, productos, ctx, lastTotals.pv, lastTotals.gan);
+  var htmlFinal = buildQuoteHtmlDocument(nota, tc, margen, productos, ctx, lastTotals.pv, lastTotals.gan, true);
   var safeName = nota.replace(/\s+/g, '_').toLowerCase();
   descargarHtml(htmlFinal, 'cotizacion_' + safeName + '.html');
 }
 
 // ============================================================
+// IMPORTAR COTIZACION DESDE UN ARCHIVO .HTML previamente exportado
+// (Exportar como HTML / Enviar Propuesta). El documento exportado es
+// la propuesta que ve el cliente y NUNCA contiene costos internos
+// (proveedor, compra USD, margen, flete, M.O.) por diseno, asi que
+// esos campos no se pueden recuperar: se importan solo los datos que
+// el propio documento contiene (cliente, items, cantidad y precio
+// unitario ya en USD), usando "Precio Directo" para reconstruir cada
+// item. Los campos internos quedan en 0 / "-" hasta que el usuario los
+// complete manualmente si lo desea.
+// ============================================================
+function parsePropuestaHtml(htmlText){
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(htmlText, 'text/html');
+
+  var cliente = {
+    nombre: '', direccion: '', ubicacion: '', ruc: '', comercial: '', ciudadEmision: ''
+  };
+  var nameEl = doc.querySelector('.pd-client-name');
+  if(nameEl) cliente.nombre = nameEl.textContent.replace(/^\s+|\s+$/g,'');
+
+  var boxEl = doc.querySelector('.pd-client-box');
+  if(boxEl){
+    var boxClone = boxEl.cloneNode(true);
+    var nameInClone = boxClone.querySelector('.pd-client-name');
+    if(nameInClone) boxClone.removeChild(nameInClone);
+    var boxHtml = boxClone.innerHTML;
+    var lineas = boxHtml.split(/<br\s*\/?>/i).map(function(s){
+      var tmp = doc.createElement('div');
+      tmp.innerHTML = s;
+      return (tmp.textContent || '').replace(/^\s+|\s+$/g,'');
+    }).filter(Boolean);
+    for(var li=0; li<lineas.length; li++){
+      var linea = lineas[li];
+      var mTax = linea.match(/Tax ID:\s*(.+)/i);
+      if(mTax){ cliente.ruc = mTax[1].replace(/^\s+|\s+$/g,''); continue; }
+      if(!cliente.direccion){ cliente.direccion = linea; continue; }
+      if(!cliente.ubicacion){ cliente.ubicacion = linea; continue; }
+    }
+  }
+
+  var metaRow = doc.querySelector('.pd-meta-row');
+  if(metaRow){
+    var mCom = metaRow.textContent.match(/Comercial:\s*([^\n]+)/i);
+    if(mCom) cliente.comercial = mCom[1].replace(/^\s+|\s+$/g,'');
+  }
+
+  var dateEl = doc.querySelector('.pd-date');
+  if(dateEl){
+    var fechaTxt = dateEl.textContent || '';
+    var mCiudad = fechaTxt.split(',')[0];
+    if(mCiudad) cliente.ciudadEmision = mCiudad.replace(/^\s+|\s+$/g,'');
+  }
+
+  var items = [];
+  var filas = doc.querySelectorAll('tr.pd-item-row');
+  for(var i=0;i<filas.length;i++){
+    var tds = filas[i].querySelectorAll('td');
+    if(tds.length < 3) continue;
+    var nombreEl = tds[0].querySelector('.pd-name');
+    var nombre = nombreEl ? nombreEl.textContent.replace(/^\s+|\s+$/g,'') : tds[0].textContent.replace(/^\s+|\s+$/g,'');
+    var cantTxt = (tds[1].textContent || '').split('\n')[0];
+    var cantidad = parseFloat(cantTxt.replace(/[^0-9.\-]/g,'')) || 1;
+    var precioTxt = (tds[2].textContent || '').replace(/[^0-9.\-]/g,'');
+    var precioUnitarioUSD = parseFloat(precioTxt) || 0;
+    if(!nombre) continue;
+    items.push({ nombre: nombre, cantidad: cantidad, precioUnitarioUSD: precioUnitarioUSD });
+  }
+
+  var internal = null;
+  var dataEl = doc.getElementById('cpv-internal-data');
+  if(dataEl && dataEl.textContent){
+    try{
+      var jsonStr = decodeURIComponent(escape(atob(dataEl.textContent.replace(/^\s+|\s+$/g,''))));
+      var parsedInternal = JSON.parse(jsonStr);
+      if(parsedInternal && parsedInternal.datos && Array.isArray(parsedInternal.datos.productos)){
+        internal = parsedInternal;
+      }
+    } catch(e){ /* bloque interno ausente o corrupto: se usa el metodo de reconstruccion visible */ }
+  }
+
+  return { cliente: cliente, items: items, internal: internal };
+}
+
+function handleImportarCotizacionFile(event){
+  var file = event.target.files && event.target.files[0];
+  event.target.value = '';
+  if(!file) return;
+  if(isLocked){
+    alert('La cotizacion actual esta guardada. Presiona Editar antes de importar.');
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var parsed;
+    try{
+      parsed = parsePropuestaHtml(String(e.target.result));
+    } catch(err){
+      alert('No se pudo leer el archivo. Verifica que sea una Propuesta COSEINCO exportada desde esta herramienta.');
+      return;
+    }
+    if(!parsed.items.length){
+      alert('No se encontraron items de cotizacion en el archivo. Verifica que sea una Propuesta COSEINCO exportada desde esta herramienta.');
+      return;
+    }
+
+    function ejecutarImportacion(){
+      if(parsed.internal && parsed.internal.datos){
+        // Restauracion de fidelidad total: el archivo trae el bloque interno
+        // (embebido oculto solo cuando se genera con "Exportar como HTML" /
+        // "Exportar" desde el Historial). Incluye Cant., Compra USD, Mejor
+        // Proveedor, Tipo de Cambio, Margen Comercial %, Flete S/. y M.O. S/.
+        var datos = parsed.internal.datos;
+        var clienteInt = parsed.internal.cliente || {};
+        if(clienteInt.nombre) byId('docCliente').value = clienteInt.nombre;
+        if(clienteInt.direccion) byId('docDireccion').value = clienteInt.direccion;
+        if(clienteInt.ubicacion) byId('docUbicacion').value = clienteInt.ubicacion;
+        if(clienteInt.ruc) byId('docRUC').value = clienteInt.ruc;
+        if(clienteInt.comercial) byId('docComercial').value = clienteInt.comercial;
+        if(clienteInt.ciudadEmision) byId('docCiudadEmision').value = clienteInt.ciudadEmision;
+        if(datos.nota) byId('notaRapida').value = datos.nota;
+
+        if(datos.params){
+          byId('tc').value = datos.params.tc;
+          byId('margen').value = datos.params.margen;
+          byId('manoObraTotal').value = datos.params.manoObraTotal;
+          byId('visita').value = datos.params.visita;
+          byId('fleteIngram').value = datos.params.fleteIngram;
+          byId('fleteIntcomex').value = datos.params.fleteIntcomex;
+          byId('fleteDeltron').value = datos.params.fleteDeltron;
+          byId('fleteOtros').value = datos.params.fleteOtros;
+        }
+
+        productos = JSON.parse(JSON.stringify(datos.productos));
+        var maxId = 0;
+        for(var pi=0;pi<productos.length;pi++){ productos[pi].selected = false; if(productos[pi].id > maxId) maxId = productos[pi].id; }
+        nextId = maxId + 1;
+
+        editandoProductoId = null;
+        recalcularTodo();
+        alert(productos.length + ' item(s) importado(s) con todos sus datos (Cant., Compra USD, Mejor Proveedor, Tipo de Cambio, Margen Comercial %, Flete S/. y M.O. S/.).');
+        return;
+      }
+
+      // Fallback: el archivo no trae el bloque interno (por ejemplo, fue
+      // generado con "Enviar Propuesta (.html) por WhatsApp", que nunca lo
+      // incluye porque va dirigido al cliente). Solo se puede reconstruir
+      // lo que el documento visible contiene.
+      if(parsed.cliente.nombre) byId('docCliente').value = parsed.cliente.nombre;
+      if(parsed.cliente.direccion) byId('docDireccion').value = parsed.cliente.direccion;
+      if(parsed.cliente.ubicacion) byId('docUbicacion').value = parsed.cliente.ubicacion;
+      if(parsed.cliente.ruc) byId('docRUC').value = parsed.cliente.ruc;
+      if(parsed.cliente.comercial) byId('docComercial').value = parsed.cliente.comercial;
+      if(parsed.cliente.ciudadEmision) byId('docCiudadEmision').value = parsed.cliente.ciudadEmision;
+
+      var tcActual = getTC() || 3.75;
+      var margenActual = getMargen();
+      productos = [];
+      nextId = 1;
+      for(var i=0;i<parsed.items.length;i++){
+        var it = parsed.items[i];
+        var pvUnitLocal = it.precioUnitarioUSD * tcActual;
+        // El documento visible solo trae el Precio de Venta final (ya con margen
+        // aplicado), no el costo base. Se "revierte" el margen actual para obtener
+        // un costo equivalente que, al recalcular, reproduce el mismo precio de venta.
+        var costoEquivalente = margenActual < 1 ? pvUnitLocal * (1 - margenActual) : pvUnitLocal;
+        productos.push({
+          id: nextId, cat: 'S', nombre: it.nombre, qty: it.cantidad, tangible: false, ensamble: false,
+          i:0, x:0, d:0, o:0, precioDirecto: costoEquivalente, selected:false
+        });
+        nextId = nextId + 1;
+      }
+      editandoProductoId = null;
+      recalcularTodo();
+      alert(parsed.items.length + ' item(s) importado(s). Este archivo no incluye los costos internos (proveedor, compra, margen, flete, M.O.) porque fue generado para enviar al cliente; quedaron en 0. Para importar con todos los datos, usa un archivo generado con "Exportar como HTML".');
+    }
+
+    if(productos.length > 0){
+      showConfirm('Esto reemplazara los ' + productos.length + ' producto(s) actuales por los importados del archivo. Continuar?', ejecutarImportacion);
+    } else {
+      ejecutarImportacion();
+    }
+  };
+  reader.onerror = function(){
+    alert('No se pudo leer el archivo seleccionado.');
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+// ============================================================
 // HISTORIAL DE COTIZACIONES GUARDADAS
 // ============================================================
+function buildHistorialDetalleHtml(h){
+  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros];
+  var fleteMap = calcularFletesPorProveedor(h.productos, fletesGlobal);
+  var moMap = calcularManoObraPorProducto(h.productos, h.params.tc, h.params.manoObraTotal, fletesGlobal);
+  var ctx = { tc: h.params.tc, margen: h.params.margen/100, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: h.params.visita };
+
+  var rows = '';
+  for(var i=0;i<h.productos.length;i++){
+    var p = h.productos[i];
+    var r = calcularFila(p, ctx);
+    rows += '<tr>' +
+      '<td style="text-align:left">' + p.nombre + '</td>' +
+      '<td class="num">' + p.qty + '</td>' +
+      '<td class="num">' + (p.cat === 'T' ? '$' + fmt(r.compraUSD) : '-') + '</td>' +
+      '<td>' + (r.mejorProv ? r.mejorProv.prov : '-') + '</td>' +
+      '<td class="num">' + fmt(h.params.tc) + '</td>' +
+      '<td class="num">' + fmt(h.params.margen) + '%</td>' +
+      '<td class="num">' + (r.fleteSoles > 0 ? fmt(r.fleteSoles) : '-') + '</td>' +
+      '<td class="num">' + (r.moSoles > 0 ? fmt(r.moSoles) : '-') + '</td>' +
+      '</tr>';
+  }
+
+  return '<div class="hist-detalle-inner">' +
+    '<div class="hist-detalle-titulo">Detalle interno (no se incluye en Exportar / WhatsApp)</div>' +
+    '<table class="hist-detalle-table"><thead><tr>' +
+      '<th style="text-align:left">Item</th><th>Cant.</th><th>Compra USD</th><th>Mejor Proveedor</th>' +
+      '<th>Tipo de Cambio</th><th>Margen Comercial %</th><th>Flete S/.</th><th>M.O. S/.</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+function toggleHistorialDetalle(id){
+  var row = byId('histDetalle_' + id);
+  if(!row) return;
+  row.classList.toggle('hidden');
+}
+
 function renderHistorial(){
   var wrap = byId('historialWrap');
   if(historial.length === 0){
@@ -2110,9 +2333,13 @@ function renderHistorial(){
       '<button class="btn btn-ghost btn-sm" onclick="historialCargar(\'' + h.id + '\')">Cargar</button> ' +
       '<button class="btn btn-blue btn-sm" onclick="historialExportarHtml(\'' + h.id + '\')">Exportar HTML</button> ' +
       '<button class="btn btn-sm" style="background:#25D366;color:#fff" onclick="historialEnviarWhatsApp(\'' + h.id + '\')">WhatsApp</button> ' +
+      (esAlt ? '' : '<button class="btn btn-ghost btn-sm" onclick="toggleHistorialDetalle(\'' + h.id + '\')">Ver Detalle</button> ') +
       '<button class="btn btn-danger btn-sm" onclick="historialEliminar(\'' + h.id + '\')">Eliminar</button>' +
       '</td>';
     html += '</tr>';
+    if(!esAlt){
+      html += '<tr id="histDetalle_' + h.id + '" class="hist-detalle-row hidden"><td colspan="7">' + buildHistorialDetalleHtml(h) + '</td></tr>';
+    }
   }
   html += '</tbody></table></div></div>';
   wrap.innerHTML = html;
@@ -2181,7 +2408,7 @@ function historialExportarHtml(id){
   var moMap = calcularManoObraPorProducto(h.productos, h.params.tc, h.params.manoObraTotal, fletesGlobal);
   var ctx = { tc: h.params.tc, margen: h.params.margen/100, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: h.params.visita };
 
-  var htmlFinal = buildQuoteHtmlDocument(h.nota, h.params.tc, h.params.margen/100, h.productos, ctx, h.totales.pv, h.totales.gan);
+  var htmlFinal = buildQuoteHtmlDocument(h.nota, h.params.tc, h.params.margen/100, h.productos, ctx, h.totales.pv, h.totales.gan, true);
   var safeName = h.nota.replace(/\s+/g, '_').toLowerCase();
   descargarHtml(htmlFinal, 'cotizacion_' + safeName + '.html');
 }
@@ -2202,12 +2429,12 @@ function historialEliminar(id){
   onCatChange();
   await cargarHistorialStorage();
   await cargarDraftStorage();
-  await cargarCatalogoStorage();
+  await cargarLogoStorage();
+  aplicarLogo();
   setModo(modoCotizacion);
   recalcularTodo();
   renderComparativa();
   renderHistorial();
-  actualizarEstadoCatalogo();
   if(isLocked){ setLocked(true); }
 })();
 
@@ -2218,14 +2445,18 @@ window.editarCotizacion = editarCotizacion;
 window.nuevaCotizacion = nuevaCotizacion;
 window.agregarProducto = agregarProducto;
 window.eliminarProducto = eliminarProducto;
+window.editarProducto = editarProducto;
+window.cancelarEdicionProducto = cancelarEdicionProducto;
 window.agregarDemo = agregarDemo;
 window.exportarHTML = exportarHTML;
+window.handleImportarCotizacionFile = handleImportarCotizacionFile;
 window.recalcularTodo = recalcularTodo;
 window.showConfirm = showConfirm;
 window.hideConfirm = hideConfirm;
 window.historialCargar = historialCargar;
 window.historialExportarHtml = historialExportarHtml;
 window.historialEliminar = historialEliminar;
+window.toggleHistorialDetalle = toggleHistorialDetalle;
 window.setModo = setModo;
 window.agregarAlternativa = agregarAlternativa;
 window.eliminarAlternativa = eliminarAlternativa;
@@ -2243,11 +2474,8 @@ window.taxQuitarImpuesto = taxQuitarImpuesto;
 window.taxAgregarImpuesto = taxAgregarImpuesto;
 window.enviarPorWhatsApp = enviarPorWhatsApp;
 window.historialEnviarWhatsApp = historialEnviarWhatsApp;
-window.handleCatalogoFile = handleCatalogoFile;
-window.importarCatalogoConfirmado = importarCatalogoConfirmado;
-window.vaciarCatalogo = vaciarCatalogo;
-window.buscarEnCatalogo = buscarEnCatalogo;
-window.seleccionarCatalogoItem = seleccionarCatalogoItem;
+window.compartirDocumentoWhatsApp = compartirDocumentoWhatsApp;
+window.handleLogoFile = handleLogoFile;
 </script>
 </body>
 </html>
