@@ -331,7 +331,8 @@
       <div class="field"><label>Flete Ingram (S/.)</label><input type="number" id="fleteIngram" class="lockable" value="80" step="1" oninput="recalcularTodo()"></div>
       <div class="field"><label>Flete Intcomex (S/.)</label><input type="number" id="fleteIntcomex" class="lockable" value="50" step="1" oninput="recalcularTodo()"></div>
       <div class="field"><label>Flete Deltron (S/.)</label><input type="number" id="fleteDeltron" class="lockable" value="30" step="1" oninput="recalcularTodo()"></div>
-      <div class="field"><label>Flete Otros (S/.)</label><input type="number" id="fleteOtros" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
+      <div class="field"><label>Flete Otros 1 (S/.)</label><input type="number" id="fleteOtros" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
+      <div class="field"><label>Flete Otros 2 (S/.)</label><input type="number" id="fleteOtros2" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
     </div>
   </div>
 
@@ -355,10 +356,8 @@
       <div class="field"><label>Ingram (USD)</label><input type="number" id="fIngram" class="lockable" value="0" step="0.01"></div>
       <div class="field"><label>Intcomex (USD)</label><input type="number" id="fIntcomex" class="lockable" value="0" step="0.01"></div>
       <div class="field"><label>Deltron (USD)</label><input type="number" id="fDeltron" class="lockable" value="0" step="0.01"></div>
-      <div class="field"><label>Otros (USD)</label><input type="number" id="fOtros" class="lockable" value="0" step="0.01"></div>
-    </div>
-    <div id="rowPrecioDirecto" class="grid grid-4" style="margin-top:12px;display:none">
-      <div class="field"><label>Precio Directo (S/.)</label><input type="number" id="fPrecioDirecto" class="lockable" value="0" step="0.01"></div>
+      <div class="field"><label>Otros 1 (USD)</label><input type="number" id="fOtros" class="lockable" value="0" step="0.01"></div>
+      <div class="field"><label>Otros 2 (USD)</label><input type="number" id="fOtros2" class="lockable" value="0" step="0.01"></div>
     </div>
     <div class="form-actions">
       <button class="btn btn-blue lockable" id="btnAgregarItem" onclick="agregarProducto()">Agregar Item</button>
@@ -371,7 +370,6 @@
           <thead>
             <tr>
               <th>Sel.</th><th>Cat.</th><th>Producto</th><th>Cant.</th><th>Tang.</th><th>Ens.</th>
-              <th>Ingram $</th><th>Intcomex $</th><th>Deltron $</th><th>Otros $</th>
               <th>Mejor Prov.</th><th>Compra USD</th><th>Compra S/.</th>
               <th>Flete S/.</th><th>M.O. S/.</th><th>Costo Total</th>
               <th>PV Unit.</th><th>PV Total</th><th>Ganancia</th><th>PV Total (USD)</th><th></th>
@@ -399,7 +397,6 @@
 
   <div class="card modo-agrupado" style="text-align:center">
     <button class="btn btn-green" onclick="exportarHTML()">Exportar como HTML</button>
-    <button class="btn btn-ghost" style="margin-left:10px" onclick="agregarDemo()">Cargar datos de ejemplo</button>
     <button class="btn btn-blue" style="margin-left:10px;background:#25D366" onclick="enviarPorWhatsApp('agrupado')">Enviar por WhatsApp</button>
     <button class="btn btn-blue" style="margin-left:10px;background:#128C7E" onclick="compartirDocumentoWhatsApp('agrupado')">Enviar Propuesta (.html) por WhatsApp</button>
     <button class="btn btn-ghost" style="margin-left:10px" onclick="byId('importarCotizacionInput').click()">Importar Cotizacion (.html)</button>
@@ -662,7 +659,7 @@ function buildDraftSnapshot(){
     isLocked: isLocked,
     params: {
       tc: gv('tc'), margen: gv('margen'), manoObraTotal: gv('manoObraTotal'), visita: gv('visita'),
-      fleteIngram: gv('fleteIngram'), fleteIntcomex: gv('fleteIntcomex'), fleteDeltron: gv('fleteDeltron'), fleteOtros: gv('fleteOtros'),
+      fleteIngram: gv('fleteIngram'), fleteIntcomex: gv('fleteIntcomex'), fleteDeltron: gv('fleteDeltron'), fleteOtros: gv('fleteOtros'), fleteOtros2: gv('fleteOtros2'),
       escDescuento: gv('escDescuento'), escTC: gv('escTC'), escMargen: gv('escMargen')
     }
   };
@@ -713,6 +710,7 @@ async function cargarDraftStorage(){
       byId('fleteIntcomex').value = d.params.fleteIntcomex != null ? d.params.fleteIntcomex : 50;
       byId('fleteDeltron').value = d.params.fleteDeltron != null ? d.params.fleteDeltron : 30;
       byId('fleteOtros').value = d.params.fleteOtros != null ? d.params.fleteOtros : 40;
+      byId('fleteOtros2').value = d.params.fleteOtros2 != null ? d.params.fleteOtros2 : 40;
       byId('escDescuento').value = d.params.escDescuento != null ? d.params.escDescuento : 5;
       byId('escTC').value = d.params.escTC != null ? d.params.escTC : 3.85;
       byId('escMargen').value = d.params.escMargen != null ? d.params.escMargen : 28;
@@ -725,9 +723,9 @@ async function cargarDraftStorage(){
   }
 }
 
-var PROVEEDORES = ['Ingram', 'Intcomex', 'Deltron', 'Otros'];
-var PROV_KEYS = ['i', 'x', 'd', 'o'];
-var FLETE_IDS = ['fleteIngram', 'fleteIntcomex', 'fleteDeltron', 'fleteOtros'];
+var PROVEEDORES = ['Ingram', 'Intcomex', 'Deltron', 'Otros 1', 'Otros 2'];
+var PROV_KEYS = ['i', 'x', 'd', 'o', 'o2'];
+var FLETE_IDS = ['fleteIngram', 'fleteIntcomex', 'fleteDeltron', 'fleteOtros', 'fleteOtros2'];
 
 function byId(id){
   return document.getElementById(id);
@@ -865,7 +863,9 @@ function buildDocumentoProfesionalHtml(opciones, datosInternos){
   html.push('.pd-total-row{border-top:2px solid #152B44;margin-top:4px;padding-top:6px;font-size:14px}');
   html.push('.pd-total-row span, .pd-total-row b{color:#152B44;font-weight:800}');
   html.push('.pd-conditions{margin-top:30px;border-top:2px solid #152B44;padding-top:14px}');
-  html.push('.pd-conditions h4{font-size:11px;color:#152B44;text-transform:uppercase;letter-spacing:.5px;margin:0 0 8px}');
+  html.push('.pd-conditions-row{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin:0 0 8px}');
+  html.push('.pd-conditions h4{font-size:11px;color:#152B44;text-transform:uppercase;letter-spacing:.5px;margin:0}');
+  html.push('.pd-conditions .pd-pago{font-size:11px;color:#152B44;font-weight:800;text-transform:uppercase;letter-spacing:.5px}');
   html.push('.pd-conditions p{font-size:10.5px;color:#64748b;margin:0}');
   html.push('.pd-internal-sep{border:none;border-top:4px solid #dc2626;margin:26px 0 0}');
   html.push('.pd-internal-wrap{max-width:800px;margin:0 auto}');
@@ -903,8 +903,9 @@ function buildDocumentoProfesionalHtml(opciones, datosInternos){
   html.push('<div class="pd-intro">Por intermedio del presente nos es grato dirigirnos a usted, con el proposito de hacerle llegar nuestra propuesta tecnico-economica.</div>');
   html.push('<div class="pd-meta-row"><span>Fecha de presupuesto: <b>' + fechaPresupuesto + '</b></span><span>Comercial: <b>' + comercial + '</b></span></div>');
   html.push(opcionesHtml);
-  html.push('<div class="pd-conditions"><h4>Condiciones Comerciales</h4>' +
-    '<p>955416047 - 980124924 - 999706965 &middot; comercial@coseinco.com.pe &middot; http://coseinco.com.pe</p></div>');
+  html.push('<div class="pd-conditions">' +
+    '<div class="pd-conditions-row"><h4>Condiciones Comerciales</h4><span class="pd-pago">Pago al Contado</span></div>' +
+    '<p>999027999 - 980124924 - 955416047 &middot; comercial@coseinco.com.pe &middot; ventas@coseinco.com.pe &middot; www.coseinco.com.pe</p></div>');
   html.push('</div>');
   if(datosInternos){
     html.push('<div class="pd-internal-wrap">');
@@ -940,11 +941,10 @@ function buildDocumentoProfesionalHtml(opciones, datosInternos){
 }
 
 function onCatChange(){
-  var cat = byId('fCat').value;
-  var esTangible = (cat === 'T');
-  byId('rowPreciosProv').style.display = esTangible ? 'grid' : 'none';
-  byId('rowPrecioDirecto').style.display = esTangible ? 'none' : 'grid';
-  byId('fTangible').checked = esTangible;
+  // Todas las categorias (Hardware, Licencia, Servicio, Visita Presencial)
+  // usan el mismo formulario: Producto Tangible, Incluir en Ensamble y los
+  // 5 precios por proveedor (Ingram, Intcomex, Deltron, Otros 1, Otros 2).
+  byId('rowPreciosProv').style.display = 'grid';
 }
 
 function setLocked(locked){
@@ -1017,7 +1017,7 @@ function guardarCotizacion(){
     productos: JSON.parse(JSON.stringify(productos)),
     params: {
       tc: gv('tc'), margen: gv('margen'), manoObraTotal: gv('manoObraTotal'), visita: gv('visita'),
-      fleteIngram: gv('fleteIngram'), fleteIntcomex: gv('fleteIntcomex'), fleteDeltron: gv('fleteDeltron'), fleteOtros: gv('fleteOtros')
+      fleteIngram: gv('fleteIngram'), fleteIntcomex: gv('fleteIntcomex'), fleteDeltron: gv('fleteDeltron'), fleteOtros: gv('fleteOtros'), fleteOtros2: gv('fleteOtros2')
     },
     totales: { costo: lastTotals.costo, pv: lastTotals.pv, gan: lastTotals.gan }
   };
@@ -1046,6 +1046,7 @@ function nuevaCotizacion(){
     byId('fleteIntcomex').value = 50;
     byId('fleteDeltron').value = 30;
     byId('fleteOtros').value = 40;
+    byId('fleteOtros2').value = 40;
     setLocked(false);
   }
   if(productos.length > 0 || alternativas.length > 0){
@@ -1091,7 +1092,7 @@ function calcularFletesPorProveedor(rows, fletesGlobal){
   var grupos = {};
   for(var r=0; r<rows.length; r++){
     var p = rows[r];
-    if(p.cat !== 'T' || !p.tangible) continue;
+    if(!p.tangible) continue;
     var mp = mejorProveedor(p, fletesGlobal);
     if(!mp) continue;
     var pesoUSD = mp.precio * p.qty;
@@ -1118,7 +1119,7 @@ function calcularFletesPorProveedor(rows, fletesGlobal){
 function calcularManoObraPorProducto(rows, tc, manoObraTotal, fletesGlobal){
   var ensamblados = [];
   for(var r=0; r<rows.length; r++){
-    if(rows[r].ensamble && rows[r].cat === 'T') ensamblados.push(rows[r]);
+    if(rows[r].ensamble && rows[r].tangible) ensamblados.push(rows[r]);
   }
   if(ensamblados.length === 0 || manoObraTotal <= 0) return {};
 
@@ -1143,21 +1144,11 @@ function calcularManoObraPorProducto(rows, tc, manoObraTotal, fletesGlobal){
 
 function calcularFila(p, ctx){
   var tc = ctx.tc, margen = ctx.margen, fletesGlobal = ctx.fletesGlobal,
-      fleteMap = ctx.fleteMap, moMap = ctx.moMap, visita = ctx.visita;
+      fleteMap = ctx.fleteMap, moMap = ctx.moMap;
 
-  if(p.cat === 'V'){
-    return { mejorProv:null, compraUSD:0, compraSoles:0, fleteSoles:0, moSoles:0,
-      costoTotal: visita, pvUnit: visita, pvTotal: visita, ganancia: 0, ganTotal: 0 };
-  }
-
-  if(p.cat === 'L' || p.cat === 'S'){
-    var costo = p.precioDirecto || 0;
-    var pvUnitLS = margen < 1 ? costo / (1 - margen) : costo;
-    var ganLS = pvUnitLS - costo;
-    return { mejorProv:null, compraUSD:0, compraSoles:costo, fleteSoles:0, moSoles:0,
-      costoTotal: costo, pvUnit: pvUnitLS, pvTotal: pvUnitLS * p.qty, ganancia: ganLS, ganTotal: ganLS * p.qty };
-  }
-
+  // Todas las categorias (Hardware, Licencia, Servicio, Visita Presencial) usan
+  // el mismo mecanismo de costeo: Mejor Proveedor (de los 5 precios ingresados)
+  // + Flete + Mano de Obra (si "Producto Tangible" / "Incluir en Ensamble" estan activos).
   var mp = mejorProveedor(p, fletesGlobal);
   var compraUSD = mp ? mp.precio : 0;
   var compraSoles = compraUSD * tc;
@@ -1182,28 +1173,11 @@ function buildRowHtml(p, idx, r, dis){
     ' onchange="productos[' + idx + '].qty=Math.max(1,parseInt(this.value)||1);recalcularTodo()"></td>';
   html += '<td style="text-align:center"><input type="checkbox" class="row-chk" ' + (p.tangible ? 'checked' : '') + ' ' + dis +
     ' onchange="productos[' + idx + '].tangible=this.checked;recalcularTodo()"></td>';
-  if(p.cat === 'T'){
-    html += '<td style="text-align:center"><input type="checkbox" class="row-chk" ' + (p.ensamble ? 'checked' : '') + ' ' + dis +
-      ' onchange="productos[' + idx + '].ensamble=this.checked;recalcularTodo()"></td>';
-  } else {
-    html += '<td></td>';
-  }
-
-  if(p.cat === 'T'){
-    for(var i=0; i<PROV_KEYS.length; i++){
-      var k = PROV_KEYS[i];
-      var isBest = r.mejorProv && r.mejorProv.idx === i;
-      var styleBest = isBest ? 'color:#16a34a;font-weight:800' : '';
-      html += '<td class="num"><input class="cell-input" type="number" step="0.01" value="' + (p[k] || 0) + '" ' + dis +
-        ' style="' + styleBest + '"' +
-        ' onchange="productos[' + idx + '].' + k + '=parseFloat(this.value)||0;recalcularTodo()"></td>';
-    }
-  } else {
-    html += '<td class="num">-</td><td class="num">-</td><td class="num">-</td><td class="num">-</td>';
-  }
+  html += '<td style="text-align:center"><input type="checkbox" class="row-chk" ' + (p.ensamble ? 'checked' : '') + ' ' + dis +
+    ' onchange="productos[' + idx + '].ensamble=this.checked;recalcularTodo()"></td>';
 
   html += '<td>' + (r.mejorProv ? '<span class="prov-best">' + r.mejorProv.prov + '</span>' : '-') + '</td>';
-  html += '<td class="num">' + (p.cat === 'T' ? '$' + fmt(r.compraUSD) : '-') + '</td>';
+  html += '<td class="num">' + (r.mejorProv ? '$' + fmt(r.compraUSD) : '-') + '</td>';
   html += '<td class="num">' + fmt(r.compraSoles) + '</td>';
   html += '<td class="num">' + (r.fleteSoles > 0 ? fmt(r.fleteSoles) : '-') + '</td>';
   html += '<td class="num">' + (r.moSoles > 0 ? fmt(r.moSoles) : '-') + '</td>';
@@ -1241,7 +1215,7 @@ function recalcularTodo(){
     totCosto += r.costoTotal * p.qty;
     totPVTotal += r.pvTotal;
     totGanancia += r.ganTotal;
-    if(p.cat === 'T' && r.mejorProv) sumaComprasUSD += r.compraUSD * p.qty;
+    sumaComprasUSD += r.compraUSD * p.qty;
 
     var dis = isLocked ? 'disabled' : '';
     var tr = document.createElement('tr');
@@ -1250,14 +1224,19 @@ function recalcularTodo(){
   }
 
   if(productos.length === 0){
-    tbody.innerHTML = '<tr><td colspan="20" style="text-align:center;padding:30px;color:var(--txt-muted)">No hay productos agregados. Usa el formulario de arriba o carga datos de ejemplo.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="17" style="text-align:center;padding:30px;color:var(--txt-muted)">No hay productos agregados. Usa el formulario de arriba para agregar uno.</td></tr>';
   }
 
+  var igvPctGlobal = gv('agrupadoIGV');
+  if(isNaN(igvPctGlobal)) igvPctGlobal = 18;
+  var pvTotalUSD = tc > 0 ? (totPVTotal / tc) : 0;
+  var pvTotalConIgvUSD = pvTotalUSD * (1 + igvPctGlobal / 100);
+
   var sumHtml = '';
-  sumHtml += '<div class="sum-card accent"><div class="lbl">Suma Compras USD (Tangibles)</div><div class="val">$' + fmt(sumaComprasUSD) + '</div></div>';
-  sumHtml += '<div class="sum-card"><div class="lbl">Costo Total S/.</div><div class="val">S/. ' + fmt(totCosto) + '</div></div>';
-  sumHtml += '<div class="sum-card accent"><div class="lbl">P.V. Total S/.</div><div class="val">S/. ' + fmt(totPVTotal) + '</div></div>';
-  sumHtml += '<div class="sum-card gain"><div class="lbl">Ganancia Total S/.</div><div class="val">S/. ' + fmt(totGanancia) + '</div></div>';
+  sumHtml += '<div class="sum-card accent"><div class="lbl">Suma Compras USD (Todos)</div><div class="val">$' + fmt(sumaComprasUSD) + '</div></div>';
+  sumHtml += '<div class="sum-card"><div class="lbl">PV Total (USD)</div><div class="val">$' + fmt(pvTotalUSD) + '</div></div>';
+  sumHtml += '<div class="sum-card"><div class="lbl">IGV / Impuestos %</div><div class="val">' + fmt(igvPctGlobal) + '%</div></div>';
+  sumHtml += '<div class="sum-card gain"><div class="lbl">P.V. Total + IGV</div><div class="val">$' + fmt(pvTotalConIgvUSD) + '</div></div>';
   byId('summaryGrid').innerHTML = sumHtml;
 
   lastCtx = ctx;
@@ -1608,12 +1587,8 @@ function agregarProducto(){
       existente.qty = qty;
       existente.tangible = tangible;
       existente.ensamble = ensamble;
-      existente.i = 0; existente.x = 0; existente.d = 0; existente.o = 0; existente.precioDirecto = 0;
-      if(cat === 'T'){
-        existente.i = gv('fIngram'); existente.x = gv('fIntcomex'); existente.d = gv('fDeltron'); existente.o = gv('fOtros');
-      } else if(cat !== 'V'){
-        existente.precioDirecto = gv('fPrecioDirecto');
-      }
+      existente.i = gv('fIngram'); existente.x = gv('fIntcomex'); existente.d = gv('fDeltron');
+      existente.o = gv('fOtros'); existente.o2 = gv('fOtros2');
     }
     cancelarEdicionProducto();
     recalcularTodo();
@@ -1621,14 +1596,8 @@ function agregarProducto(){
   }
 
   var p = { id: nextId, cat: cat, nombre: nombre, qty: qty, tangible: tangible, ensamble: ensamble,
-    i:0, x:0, d:0, o:0, precioDirecto:0, selected:false };
+    i: gv('fIngram'), x: gv('fIntcomex'), d: gv('fDeltron'), o: gv('fOtros'), o2: gv('fOtros2'), selected:false };
   nextId = nextId + 1;
-
-  if(cat === 'T'){
-    p.i = gv('fIngram'); p.x = gv('fIntcomex'); p.d = gv('fDeltron'); p.o = gv('fOtros');
-  } else if(cat !== 'V'){
-    p.precioDirecto = gv('fPrecioDirecto');
-  }
 
   productos.push(p);
   byId('fNombre').value = '';
@@ -1637,7 +1606,7 @@ function agregarProducto(){
   byId('fIntcomex').value = 0;
   byId('fDeltron').value = 0;
   byId('fOtros').value = 0;
-  byId('fPrecioDirecto').value = 0;
+  byId('fOtros2').value = 0;
   recalcularTodo();
 }
 
@@ -1663,7 +1632,7 @@ function editarProducto(id){
   byId('fIntcomex').value = p.x || 0;
   byId('fDeltron').value = p.d || 0;
   byId('fOtros').value = p.o || 0;
-  byId('fPrecioDirecto').value = p.precioDirecto || 0;
+  byId('fOtros2').value = p.o2 || 0;
 
   byId('editandoBadge').classList.remove('hidden');
   byId('btnAgregarItem').textContent = 'Guardar Cambios';
@@ -1683,7 +1652,7 @@ function cancelarEdicionProducto(){
   byId('fIntcomex').value = 0;
   byId('fDeltron').value = 0;
   byId('fOtros').value = 0;
-  byId('fPrecioDirecto').value = 0;
+  byId('fOtros2').value = 0;
   byId('editandoBadge').classList.add('hidden');
   byId('btnAgregarItem').textContent = 'Agregar Item';
 }
@@ -1730,20 +1699,9 @@ function transferirProductosSeleccionados(){
     var p = seleccionados[i];
     var r = calcularFila(p, lastCtx);
 
-    var costoProveedorAlt, fleteAlt, margenAlt;
-    if(p.cat === 'V'){
-      costoProveedorAlt = r.costoTotal;
-      fleteAlt = 0;
-      margenAlt = 0;
-    } else if(p.cat === 'L' || p.cat === 'S'){
-      costoProveedorAlt = p.precioDirecto || 0;
-      fleteAlt = 0;
-      margenAlt = margenGlobal;
-    } else {
-      costoProveedorAlt = r.compraSoles;
-      fleteAlt = (r.fleteSoles + r.moSoles) / p.qty;
-      margenAlt = margenGlobal;
-    }
+    var costoProveedorAlt = r.compraSoles;
+    var fleteAlt = (r.fleteSoles + r.moSoles) / p.qty;
+    var margenAlt = margenGlobal;
 
     var nuevaAlt = {
       id: nextAltId,
@@ -1770,13 +1728,13 @@ function transferirProductosSeleccionados(){
 
 function agregarDemo(){
   productos = [
-    { id: 1, cat:'T', nombre:'Laptop HP 250 G9', qty:2, tangible:true, ensamble:false, i:620, x:615, d:610, o:630, precioDirecto:0, selected:false },
-    { id: 2, cat:'T', nombre:'Monitor 24 pulg FHD', qty:3, tangible:true, ensamble:false, i:180, x:175, d:182, o:190, precioDirecto:0, selected:false },
-    { id: 3, cat:'T', nombre:'CPU Placa Madre', qty:1, tangible:true, ensamble:true, i:250, x:250, d:250, o:250, precioDirecto:0, selected:false },
-    { id: 4, cat:'T', nombre:'CPU Procesador', qty:1, tangible:true, ensamble:true, i:180, x:175, d:178, o:182, precioDirecto:0, selected:false },
-    { id: 5, cat:'L', nombre:'Windows 11 Pro OEM', qty:2, tangible:false, ensamble:false, i:0, x:0, d:0, o:0, precioDirecto:320, selected:false },
-    { id: 6, cat:'S', nombre:'Soporte Tecnico 1h', qty:1, tangible:false, ensamble:false, i:0, x:0, d:0, o:0, precioDirecto:80, selected:false },
-    { id: 7, cat:'V', nombre:'Visita Presencial', qty:1, tangible:false, ensamble:false, i:0, x:0, d:0, o:0, precioDirecto:0, selected:false }
+    { id: 1, cat:'T', nombre:'Laptop HP 250 G9', qty:2, tangible:true, ensamble:false, i:620, x:615, d:610, o:630, o2:625, selected:false },
+    { id: 2, cat:'T', nombre:'Monitor 24 pulg FHD', qty:3, tangible:true, ensamble:false, i:180, x:175, d:182, o:190, o2:185, selected:false },
+    { id: 3, cat:'T', nombre:'CPU Placa Madre', qty:1, tangible:true, ensamble:true, i:250, x:250, d:250, o:250, o2:250, selected:false },
+    { id: 4, cat:'T', nombre:'CPU Procesador', qty:1, tangible:true, ensamble:true, i:180, x:175, d:178, o:182, o2:180, selected:false },
+    { id: 5, cat:'L', nombre:'Windows 11 Pro OEM', qty:2, tangible:false, ensamble:false, i:85, x:82, d:88, o:0, o2:0, selected:false },
+    { id: 6, cat:'S', nombre:'Soporte Tecnico 1h', qty:1, tangible:false, ensamble:false, i:0, x:0, d:0, o:22, o2:0, selected:false },
+    { id: 7, cat:'V', nombre:'Visita Presencial', qty:1, tangible:false, ensamble:false, i:0, x:0, d:0, o:0, o2:15, selected:false }
   ];
   nextId = 8;
   byId('manoObraTotal').value = 150;
@@ -1931,7 +1889,7 @@ function historialEnviarWhatsApp(id){
     return;
   }
 
-  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros];
+  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros, h.params.fleteOtros2];
   var fleteMap = calcularFletesPorProveedor(h.productos, fletesGlobal);
   var moMap = calcularManoObraPorProducto(h.productos, h.params.tc, h.params.manoObraTotal, fletesGlobal);
   var ctx = { tc: h.params.tc, margen: h.params.margen/100, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: h.params.visita };
@@ -1963,7 +1921,7 @@ function buildQuoteHtmlDocument(nota, tc, margen, productosArr, ctx, totPV, totG
       filasInternas.push({
         nombre: p2.nombre,
         cantidad: p2.qty,
-        compraUSD: p2.cat === 'T' ? r2.compraUSD : null,
+        compraUSD: r2.mejorProv ? r2.compraUSD : null,
         mejorProveedor: r2.mejorProv ? r2.mejorProv.prov : null,
         fleteSoles: r2.fleteSoles,
         moSoles: r2.moSoles
@@ -1983,7 +1941,8 @@ function buildQuoteHtmlDocument(nota, tc, margen, productosArr, ctx, totPV, totG
           fleteIngram: ctx.fletesGlobal ? ctx.fletesGlobal[0] : gv('fleteIngram'),
           fleteIntcomex: ctx.fletesGlobal ? ctx.fletesGlobal[1] : gv('fleteIntcomex'),
           fleteDeltron: ctx.fletesGlobal ? ctx.fletesGlobal[2] : gv('fleteDeltron'),
-          fleteOtros: ctx.fletesGlobal ? ctx.fletesGlobal[3] : gv('fleteOtros')
+          fleteOtros: ctx.fletesGlobal ? ctx.fletesGlobal[3] : gv('fleteOtros'),
+          fleteOtros2: ctx.fletesGlobal ? ctx.fletesGlobal[4] : gv('fleteOtros2')
         },
         totales: { pv: totPV, gan: totGan }
       }
@@ -2206,6 +2165,7 @@ function handleImportarCotizacionFile(event){
           byId('fleteIntcomex').value = datos.params.fleteIntcomex;
           byId('fleteDeltron').value = datos.params.fleteDeltron;
           byId('fleteOtros').value = datos.params.fleteOtros;
+          byId('fleteOtros2').value = datos.params.fleteOtros2 != null ? datos.params.fleteOtros2 : 40;
         }
 
         productos = JSON.parse(JSON.stringify(datos.productos));
@@ -2239,11 +2199,13 @@ function handleImportarCotizacionFile(event){
         var pvUnitLocal = it.precioUnitarioUSD * tcActual;
         // El documento visible solo trae el Precio de Venta final (ya con margen
         // aplicado), no el costo base. Se "revierte" el margen actual para obtener
-        // un costo equivalente que, al recalcular, reproduce el mismo precio de venta.
-        var costoEquivalente = margenActual < 1 ? pvUnitLocal * (1 - margenActual) : pvUnitLocal;
+        // un costo equivalente (en USD, colocado en "Otros 1") que, al recalcular,
+        // reproduce el mismo precio de venta.
+        var costoEquivalenteSoles = margenActual < 1 ? pvUnitLocal * (1 - margenActual) : pvUnitLocal;
+        var costoEquivalenteUSD = tcActual > 0 ? costoEquivalenteSoles / tcActual : 0;
         productos.push({
           id: nextId, cat: 'S', nombre: it.nombre, qty: it.cantidad, tangible: false, ensamble: false,
-          i:0, x:0, d:0, o:0, precioDirecto: costoEquivalente, selected:false
+          i:0, x:0, d:0, o: costoEquivalenteUSD, o2:0, selected:false
         });
         nextId = nextId + 1;
       }
@@ -2268,7 +2230,7 @@ function handleImportarCotizacionFile(event){
 // HISTORIAL DE COTIZACIONES GUARDADAS
 // ============================================================
 function buildHistorialDetalleHtml(h){
-  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros];
+  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros, h.params.fleteOtros2];
   var fleteMap = calcularFletesPorProveedor(h.productos, fletesGlobal);
   var moMap = calcularManoObraPorProducto(h.productos, h.params.tc, h.params.manoObraTotal, fletesGlobal);
   var ctx = { tc: h.params.tc, margen: h.params.margen/100, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: h.params.visita };
@@ -2280,7 +2242,7 @@ function buildHistorialDetalleHtml(h){
     rows += '<tr>' +
       '<td style="text-align:left">' + p.nombre + '</td>' +
       '<td class="num">' + p.qty + '</td>' +
-      '<td class="num">' + (p.cat === 'T' ? '$' + fmt(r.compraUSD) : '-') + '</td>' +
+      '<td class="num">' + (r.mejorProv ? '$' + fmt(r.compraUSD) : '-') + '</td>' +
       '<td>' + (r.mejorProv ? r.mejorProv.prov : '-') + '</td>' +
       '<td class="num">' + fmt(h.params.tc) + '</td>' +
       '<td class="num">' + fmt(h.params.margen) + '%</td>' +
@@ -2380,6 +2342,7 @@ function historialCargar(id){
       byId('fleteIntcomex').value = h.params.fleteIntcomex;
       byId('fleteDeltron').value = h.params.fleteDeltron;
       byId('fleteOtros').value = h.params.fleteOtros;
+      byId('fleteOtros2').value = h.params.fleteOtros2 != null ? h.params.fleteOtros2 : 40;
       setModo('agrupado');
       setLocked(false);
     }
@@ -2403,7 +2366,7 @@ function historialExportarHtml(id){
     return;
   }
 
-  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros];
+  var fletesGlobal = [h.params.fleteIngram, h.params.fleteIntcomex, h.params.fleteDeltron, h.params.fleteOtros, h.params.fleteOtros2];
   var fleteMap = calcularFletesPorProveedor(h.productos, fletesGlobal);
   var moMap = calcularManoObraPorProducto(h.productos, h.params.tc, h.params.manoObraTotal, fletesGlobal);
   var ctx = { tc: h.params.tc, margen: h.params.margen/100, fletesGlobal: fletesGlobal, fleteMap: fleteMap, moMap: moMap, visita: h.params.visita };
@@ -2447,7 +2410,6 @@ window.agregarProducto = agregarProducto;
 window.eliminarProducto = eliminarProducto;
 window.editarProducto = editarProducto;
 window.cancelarEdicionProducto = cancelarEdicionProducto;
-window.agregarDemo = agregarDemo;
 window.exportarHTML = exportarHTML;
 window.handleImportarCotizacionFile = handleImportarCotizacionFile;
 window.recalcularTodo = recalcularTodo;
