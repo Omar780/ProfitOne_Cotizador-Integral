@@ -62,6 +62,24 @@
     color:#1E293B;font-weight:600;opacity:1;cursor:not-allowed}
   .field .hint{font-size:0.75rem;color:#334155;font-weight:600;margin-top:3px}
 
+  /* Parametros Globales y Agregar Producto van una al lado de la otra */
+  .pg-ap-row{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+  .pg-ap-row .card{flex:1 1 420px;min-width:340px;margin-bottom:0}
+
+  /* Parametros Globales: dos columnas visuales (parametros base | fletes por proveedor) */
+  .pg-cols{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
+  .pg-col{display:flex;flex-direction:column;gap:14px;flex:1 1 220px;min-width:200px}
+  .pg-hidden-field{display:none}
+
+  /* Agregar Producto: columna de datos del item | columna de precios por proveedor */
+  .ap-cols{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
+  .ap-col-left{display:flex;flex-direction:column;gap:14px;flex:1 1 260px;min-width:240px}
+  .ap-col-left .grid-4{grid-template-columns:1fr}
+  .ap-chk-row{display:flex;gap:22px;flex-wrap:wrap}
+  .ap-chk-row .chk-row{padding-top:0}
+  .ap-col-right{flex:1 1 220px;min-width:200px}
+  .ap-col-right .grid-4{grid-template-columns:1fr}
+
   /* Parametros Globales: labels cortos en una sola linea para que todos los
      inputs de la fila queden alineados a la misma altura, sin importar que
      algunos campos tengan una leyenda (.hint) debajo del input. */
@@ -328,54 +346,68 @@
     </div>
   </div>
 
+  <div class="pg-ap-row">
   <div class="card modo-agrupado">
     <h2>Parametros Globales</h2>
-    <div class="grid grid-6 grid-globales">
-      <div class="field"><label>Tipo de Cambio</label><input type="number" id="tc" class="lockable" value="3.75" step="0.01" oninput="recalcularTodo()"></div>
-      <div class="field"><label title="Margen Comercial %">Margen Com. %</label><input type="number" id="margen" class="lockable" value="20" step="1" oninput="recalcularTodo()">
-        <div class="hint">PV = Costo / (1 - Margen%)</div>
+    <div class="pg-cols grid-globales">
+      <div class="pg-col">
+        <div class="field"><label>Tipo de Cambio</label><input type="number" id="tc" class="lockable" value="3.75" step="0.01" oninput="recalcularTodo()"></div>
+        <div class="field"><label title="Margen Comercial %">Margen Com. %</label><input type="number" id="margen" class="lockable" value="20" step="1" oninput="recalcularTodo()">
+          <div class="hint">PV = Costo / (1 - Margen%)</div>
+        </div>
+        <div class="field"><label title="Mano de Obra Total (S/.)">M.O. Total (S/.)</label><input type="number" id="manoObraTotal" class="lockable" value="0" step="1" oninput="recalcularTodo()">
+          <div class="hint">Se reparte solo entre items con Ensamble activo</div>
+        </div>
+        <div class="field pg-hidden-field"><label title="Visita Presencial (S/.)">Visita Pres. (S/.)</label><input type="number" id="visita" class="lockable" value="0" step="1" oninput="recalcularTodo()"></div>
+        <div class="field"><label title="IGV / Impuesto %">IGV %</label><input type="number" id="agrupadoIGV" class="lockable" value="18" step="0.5" oninput="recalcularTodo()">
+          <div class="hint">Se aplica solo en el documento de cotizacion exportado</div>
+        </div>
       </div>
-      <div class="field"><label title="Mano de Obra Total (S/.)">M.O. Total (S/.)</label><input type="number" id="manoObraTotal" class="lockable" value="0" step="1" oninput="recalcularTodo()">
-        <div class="hint">Se reparte solo entre items con Ensamble activo</div>
+      <div class="pg-col">
+        <div class="field"><label title="Flete Ingram (S/.)">Flete Ingram</label><input type="number" id="fleteIngram" class="lockable" value="80" step="1" oninput="recalcularTodo()"></div>
+        <div class="field"><label title="Flete Intcomex (S/.)">Flete Intcomex</label><input type="number" id="fleteIntcomex" class="lockable" value="50" step="1" oninput="recalcularTodo()"></div>
+        <div class="field"><label title="Flete Deltron (S/.)">Flete Deltron</label><input type="number" id="fleteDeltron" class="lockable" value="30" step="1" oninput="recalcularTodo()"></div>
+        <div class="field"><label title="Flete Otros 1 (S/.)">Flete Otros 1</label><input type="number" id="fleteOtros" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
+        <div class="field"><label title="Flete Otros 2 (S/.)">Flete Otros 2</label><input type="number" id="fleteOtros2" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
       </div>
-      <div class="field"><label title="Visita Presencial (S/.)">Visita Pres. (S/.)</label><input type="number" id="visita" class="lockable" value="0" step="1" oninput="recalcularTodo()"></div>
-      <div class="field"><label title="IGV / Impuesto %">IGV %</label><input type="number" id="agrupadoIGV" class="lockable" value="18" step="0.5" oninput="recalcularTodo()">
-        <div class="hint">Se aplica solo en el documento de cotizacion exportado</div>
-      </div>
-      <div class="field"><label title="Flete Ingram (S/.)">Flete Ingram</label><input type="number" id="fleteIngram" class="lockable" value="80" step="1" oninput="recalcularTodo()"></div>
-      <div class="field"><label title="Flete Intcomex (S/.)">Flete Intcomex</label><input type="number" id="fleteIntcomex" class="lockable" value="50" step="1" oninput="recalcularTodo()"></div>
-      <div class="field"><label title="Flete Deltron (S/.)">Flete Deltron</label><input type="number" id="fleteDeltron" class="lockable" value="30" step="1" oninput="recalcularTodo()"></div>
-      <div class="field"><label title="Flete Otros 1 (S/.)">Flete Otros 1</label><input type="number" id="fleteOtros" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
-      <div class="field"><label title="Flete Otros 2 (S/.)">Flete Otros 2</label><input type="number" id="fleteOtros2" class="lockable" value="40" step="1" oninput="recalcularTodo()"></div>
     </div>
   </div>
 
   <div class="card modo-agrupado">
     <h2>Agregar Producto <span id="editandoBadge" class="edit-badge hidden">Editando item &mdash; <button type="button" class="link-btn" onclick="cancelarEdicionProducto()">Cancelar</button></span></h2>
-    <div class="grid grid-4">
-      <div class="field"><label>Categoria</label>
-        <select id="fCat" class="lockable" onchange="onCatChange()">
-          <option value="T">Hardware (Tangible)</option>
-          <option value="L">Licencia</option>
-          <option value="S">Servicio</option>
-          <option value="V">Visita Presencial</option>
-        </select>
+    <div class="ap-cols">
+      <div class="ap-col-left">
+        <div class="grid grid-4">
+          <div class="field"><label>Categoria</label>
+            <select id="fCat" class="lockable" onchange="onCatChange()">
+              <option value="T">Hardware (Tangible)</option>
+              <option value="L">Licencia</option>
+              <option value="S">Servicio</option>
+              <option value="V">Visita Presencial</option>
+            </select>
+          </div>
+          <div class="field"><label>Nombre del producto</label><input type="text" id="fNombre" class="lockable" placeholder="Ej: Laptop HP 250"></div>
+          <div class="field"><label>Cantidad</label><input type="number" id="fQty" class="lockable" value="1" min="1" step="1"></div>
+        </div>
+        <div class="ap-chk-row">
+          <div class="chk-row"><input type="checkbox" id="fTangible" class="lockable" checked><label for="fTangible">Producto Tangible</label></div>
+          <div class="chk-row"><input type="checkbox" id="fEnsamble" class="lockable"><label for="fEnsamble">Incluir en Ensamble (M.O.)</label></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-blue lockable" id="btnAgregarItem" onclick="agregarProducto()">Agregar Item</button>
+        </div>
       </div>
-      <div class="field"><label>Nombre del producto</label><input type="text" id="fNombre" class="lockable" placeholder="Ej: Laptop HP 250"></div>
-      <div class="field"><label>Cantidad</label><input type="number" id="fQty" class="lockable" value="1" min="1" step="1"></div>
-      <div class="chk-row"><input type="checkbox" id="fTangible" class="lockable" checked><label for="fTangible">Producto Tangible</label></div>
-      <div class="chk-row"><input type="checkbox" id="fEnsamble" class="lockable"><label for="fEnsamble">Incluir en Ensamble (M.O.)</label></div>
+      <div class="ap-col-right">
+        <div id="rowPreciosProv" class="grid grid-4">
+          <div class="field"><label>Ingram (USD)</label><input type="number" id="fIngram" class="lockable" value="0" step="0.01"></div>
+          <div class="field"><label>Intcomex (USD)</label><input type="number" id="fIntcomex" class="lockable" value="0" step="0.01"></div>
+          <div class="field"><label>Deltron (USD)</label><input type="number" id="fDeltron" class="lockable" value="0" step="0.01"></div>
+          <div class="field"><label>Otros 1 (USD)</label><input type="number" id="fOtros" class="lockable" value="0" step="0.01"></div>
+          <div class="field"><label>Otros 2 (USD)</label><input type="number" id="fOtros2" class="lockable" value="0" step="0.01"></div>
+        </div>
+      </div>
     </div>
-    <div id="rowPreciosProv" class="grid grid-4" style="margin-top:12px">
-      <div class="field"><label>Ingram (USD)</label><input type="number" id="fIngram" class="lockable" value="0" step="0.01"></div>
-      <div class="field"><label>Intcomex (USD)</label><input type="number" id="fIntcomex" class="lockable" value="0" step="0.01"></div>
-      <div class="field"><label>Deltron (USD)</label><input type="number" id="fDeltron" class="lockable" value="0" step="0.01"></div>
-      <div class="field"><label>Otros 1 (USD)</label><input type="number" id="fOtros" class="lockable" value="0" step="0.01"></div>
-      <div class="field"><label>Otros 2 (USD)</label><input type="number" id="fOtros2" class="lockable" value="0" step="0.01"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-blue lockable" id="btnAgregarItem" onclick="agregarProducto()">Agregar Item</button>
-    </div>
+  </div>
   </div>  <div class="card modo-agrupado">
     <h2>Estructura de Costos e Items</h2>
     <div class="tbl-outer">
